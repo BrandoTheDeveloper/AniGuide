@@ -134,8 +134,8 @@ export default function Home() {
             <div className="relative rounded-2xl overflow-hidden h-64 md:h-80">
               <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent z-10"></div>
               <img 
-                src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=640" 
-                alt="Anime and manga collection artwork" 
+                src="/attached_assets/anime-hero-image_1751209694703.webp" 
+                alt="Epic anime characters in dramatic landscape" 
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 z-20 flex items-center">
