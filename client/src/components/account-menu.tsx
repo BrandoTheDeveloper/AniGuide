@@ -50,7 +50,7 @@ export default function AccountMenu() {
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src={user?.profileImageUrl || ""} alt="Profile" />
-              <AvatarFallback className="bg-claret text-white">
+              <AvatarFallback className="bg-claret text-[#07090d]">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
