@@ -22,6 +22,7 @@
 - [x] Trust proxy settings for production deployment
 - [x] Database connection properly configured
 - [x] Authentication flows work with production URLs
+- [x] Digital asset links configured at /.well-known/assetlinks.json
 
 ### ✅ API Integration
 - [x] AniList GraphQL API requests function correctly
@@ -65,10 +66,12 @@ bubblewrap init --manifest https://aniguide.onrender.com/manifest.json
 - [ ] Background sync queues offline actions
 
 ### Android TWA
-- [ ] bubblewrap init completes successfully
+- [ ] bubblewrap init completes successfully with package name `com.onrender.aniguide.twa`
+- [ ] Digital asset links accessible at https://aniguide.onrender.com/.well-known/assetlinks.json
 - [ ] Generated APK installs on Android device
 - [ ] All anime images display in TWA
 - [ ] App functions identically to web version
+- [ ] Deep linking works properly with configured fingerprint
 
 ## Success Metrics
 - Zero console errors on page load

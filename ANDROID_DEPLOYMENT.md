@@ -21,6 +21,8 @@ bubblewrap init --manifest https://aniguide.onrender.com/manifest.json
 
 This command should now complete successfully without the previous "Only HTTP(S) protocols supported" error.
 
+**Important**: Ensure the generated TWA uses the package name `com.onrender.aniguide.twa` to match the digital asset links configuration.
+
 ## Step 3: Build Android APK
 ```bash
 cd aniguide-twa
@@ -57,9 +59,12 @@ bubblewrap build --release
 ## App Configuration
 
 ### Digital Asset Links
-The TWA will automatically generate digital asset links for:
-- Package Name: Based on your domain
-- SHA256 Fingerprints: Generated during build process
+The digital asset links are already configured in `/public/.well-known/assetlinks.json`:
+- **Package Name**: `com.onrender.aniguide.twa`
+- **SHA256 Fingerprint**: `BF:F9:53:59:F7:A1:31:9C:8E:F0:54:11:E0:59:74:FB:44:8E:05:49:8B:01:E6:B7:7E:45:76:37:53:34:E4:AF`
+- **Relation**: `delegate_permission/common.handle_all_urls`
+
+This file verifies the relationship between your domain and Android app, enabling deep linking and app verification.
 
 ### App Details
 - **Name**: AniGuide
