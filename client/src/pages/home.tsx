@@ -7,6 +7,7 @@ import AnimeDetailModal from "@/components/anime-detail-modal";
 import MobileNav from "@/components/mobile-nav";
 import DataStatus from "@/components/data-status";
 import InstallPrompt from "@/components/install-prompt";
+import AccountMenu from "@/components/account-menu";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefreshCw } from "lucide-react";
@@ -119,6 +120,7 @@ export default function Home() {
               >
                 <RefreshCw className="h-4 w-4" />
               </Button>
+              <AccountMenu />
             </div>
             
             {/* Mobile Menu Button */}

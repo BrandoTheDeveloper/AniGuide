@@ -1,39 +1,223 @@
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Home, Search, Bookmark, Star, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Menu, Home, Search, Heart, MessageSquare, User, LogIn, LogOut, Settings, Key, Edit } from "lucide-react";
+import PasswordResetForm from "./password-reset-form";
+import UsernameChangeForm from "./username-change-form";
+import ProfileEditForm from "./profile-edit-form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function MobileNav() {
+  const [open, setOpen] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [showUsernameChange, setShowUsernameChange] = useState(false);
+  const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [location] = useLocation();
+  const { user, isAuthenticated } = useAuth();
 
   const navItems = [
-    { path: "/", icon: Home, label: "Discover" },
-    { path: "/search", icon: Search, label: "Search" },
-    { path: "/favorites", icon: Bookmark, label: "My List" },
-    { path: "/reviews", icon: Star, label: "Reviews" },
-    { path: "/profile", icon: User, label: "Profile" },
+    { href: "/", icon: Home, label: "Discover", requireAuth: false },
+    { href: "/search", icon: Search, label: "Search", requireAuth: false },
+    { href: "/favorites", icon: Heart, label: "My List", requireAuth: true },
+    { href: "/reviews", icon: MessageSquare, label: "Reviews", requireAuth: true },
+    { href: "/profile", icon: User, label: "Profile", requireAuth: true },
   ];
 
+  const accountItems = [
+    { icon: Edit, label: "Edit Profile", action: () => setShowProfileEdit(true) },
+    { icon: User, label: "Change Username", action: () => setShowUsernameChange(true) },
+    { icon: Key, label: "Reset Password", action: () => setShowPasswordReset(true) },
+  ];
+
+  const userInitials = user?.firstName && user?.lastName 
+    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    : user?.email?.[0]?.toUpperCase() || "U";
+
+  const handleNavClick = () => {
+    setOpen(false);
+  };
+
+  const handleAccountAction = (action: () => void) => {
+    setOpen(false);
+    action();
+  };
+
+  const filteredNavItems = navItems.filter(item => !item.requireAuth || isAuthenticated);
+
   return (
-    <nav 
-      className="fixed bottom-0 left-0 right-0 bg-card border-t border-border md:hidden z-40"
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      <div className="flex items-center justify-around py-2">
-        {navItems.map(({ path, icon: Icon, label }) => (
-          <Link
-            key={path}
-            href={path}
-            className={`flex flex-col items-center py-2 transition-colors ${
-              location === path ? "text-primary" : "text-muted-foreground hover:text-primary"
-            }`}
-            aria-label={`Navigate to ${label}`}
-            role="link"
-          >
-            <Icon className="w-5 h-5 mb-1" aria-hidden="true" />
-            <span className="text-xs font-medium">{label}</span>
-          </Link>
-        ))}
+    <>
+      <div className="md:hidden">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] sm:w-[350px] bg-background">
+            <SheetHeader className="pb-6">
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <svg width="36" height="36" viewBox="0 0 36 36" className="rounded-lg">
+                    <defs>
+                      <linearGradient id="logoGradientMobile" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#9C0D38" />
+                        <stop offset="100%" stopColor="#06070E" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="18" cy="18" r="16" fill="url(#logoGradientMobile)" />
+                    <path 
+                      d="M14 12 L24 18 L14 24 Z" 
+                      fill="hsl(345, 8%, 18%)" 
+                      className="drop-shadow-sm"
+                    />
+                  </svg>
+                </div>
+                <SheetTitle className="text-lg font-bold">AniGuide</SheetTitle>
+              </div>
+            </SheetHeader>
+
+            {/* User Section */}
+            {isAuthenticated ? (
+              <div className="mb-6">
+                <div className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user?.profileImageUrl || ""} alt="Profile" />
+                    <AvatarFallback className="bg-claret text-white text-sm">
+                      {userInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    {user?.firstName && user?.lastName && (
+                      <p className="font-medium text-sm truncate">
+                        {user.firstName} {user.lastName}
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="mb-6">
+                <Button 
+                  onClick={() => {
+                    setOpen(false);
+                    window.location.href = "/api/login";
+                  }}
+                  className="w-full bg-claret hover:bg-claret/90"
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
+              </div>
+            )}
+
+            {/* Navigation Items */}
+            <nav className="space-y-2">
+              {filteredNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location === item.href;
+                
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={isActive ? "secondary" : "ghost"}
+                      className={`w-full justify-start h-10 ${
+                        isActive ? "bg-claret/10 text-claret" : ""
+                      }`}
+                      onClick={handleNavClick}
+                    >
+                      <Icon className="mr-3 h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Account Management */}
+            {isAuthenticated && (
+              <>
+                <Separator className="my-6" />
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-muted-foreground px-3 mb-3">
+                    Account Settings
+                  </h3>
+                  {accountItems.map((item, index) => {
+                    const Icon = item.icon;
+                    return (
+                      <Button
+                        key={index}
+                        variant="ghost"
+                        className="w-full justify-start h-10"
+                        onClick={() => handleAccountAction(item.action)}
+                      >
+                        <Icon className="mr-3 h-4 w-4" />
+                        {item.label}
+                      </Button>
+                    );
+                  })}
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start h-10 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={() => {
+                      setOpen(false);
+                      window.location.href = "/api/logout";
+                    }}
+                  >
+                    <LogOut className="mr-3 h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              </>
+            )}
+          </SheetContent>
+        </Sheet>
       </div>
-    </nav>
+
+      {/* Account Management Dialogs */}
+      <Dialog open={showPasswordReset} onOpenChange={setShowPasswordReset}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reset Password</DialogTitle>
+          </DialogHeader>
+          <PasswordResetForm onSuccess={() => setShowPasswordReset(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showUsernameChange} onOpenChange={setShowUsernameChange}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Change Username</DialogTitle>
+          </DialogHeader>
+          <UsernameChangeForm onSuccess={() => setShowUsernameChange(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showProfileEdit} onOpenChange={setShowProfileEdit}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+          </DialogHeader>
+          <ProfileEditForm onSuccess={() => setShowProfileEdit(false)} />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

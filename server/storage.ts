@@ -7,6 +7,9 @@ export interface IStorage {
   // User operations for Replit Auth
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  updateUserProfile(id: string, updates: Partial<Pick<User, 'firstName' | 'lastName' | 'email'>>): Promise<User>;
+  updateUsername(id: string, username: string): Promise<User>;
   // Review operations
   getReviewsForAnime(animeId: number): Promise<Review[]>;
   addReview(review: InsertReview): Promise<Review>;
@@ -44,6 +47,36 @@ export class DatabaseStorage implements IStorage {
       .values(review)
       .returning();
     return newReview;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async updateUserProfile(id: string, updates: Partial<Pick<User, 'firstName' | 'lastName' | 'email'>>): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  async updateUsername(id: string, username: string): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        username,
+        lastUsernameChange: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
   }
 }
 
