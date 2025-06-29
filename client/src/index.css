@@ -65,55 +65,8 @@
   background-repeat: no-repeat;
 }
 
-/* High contrast focus indicators for accessibility */
+/* Standard focus indicators */
 *:focus-visible {
-  outline: 3px solid hsl(0, 0%, 0%);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
-}
-
-.dark *:focus-visible {
-  outline: 3px solid hsl(0, 0%, 100%);
-  outline-offset: 2px;
-}
-
-/* Ensure minimum contrast ratios */
-.text-muted-foreground {
-  color: hsl(0, 0%, 30%);
-}
-
-.dark .text-muted-foreground {
-  color: hsl(0, 0%, 70%);
-}
-
-/* High contrast buttons */
-.btn-primary {
-  background-color: hsl(0, 0%, 0%);
-  color: hsl(0, 0%, 100%);
-  border: 2px solid hsl(0, 0%, 0%);
-}
-
-.dark .btn-primary {
-  background-color: hsl(0, 0%, 100%);
-  color: hsl(0, 0%, 0%);
-  border: 2px solid hsl(0, 0%, 100%);
-}
-
-/* High contrast links */
-a {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 2px;
-}
-
-a:hover {
-  text-decoration-thickness: 3px;
-}
-
-/* Enhanced card shadows for better depth perception */
-.card {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-}
-
-.dark .card {
-  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.05);
 }

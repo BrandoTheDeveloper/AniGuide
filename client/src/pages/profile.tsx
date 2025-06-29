@@ -69,6 +69,15 @@ export default function Profile() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => window.location.href = '/'}
+                className="mr-2"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Home
+              </Button>
               <User className="w-6 h-6 text-primary" />
               <h1 className="text-2xl font-bold">Profile</h1>
             </div>
