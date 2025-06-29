@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'aniguide-v3';
+const CACHE_VERSION = 'aniguide-v5';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -77,11 +77,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Skip cross-origin requests that aren't from our allowed domains
-  if (url.origin !== self.location.origin && 
-      !url.hostname.includes('anilist.co') && 
-      !url.hostname.includes('googlefonts') &&
-      !url.hostname.includes('cdnjs.cloudflare.com')) {
+  // Skip ALL external requests except our own API
+  if (url.origin !== self.location.origin) {
     return;
   }
 
@@ -150,8 +147,32 @@ async function handleApiRequest(request) {
 
 // Handle static requests with cache-first strategy
 async function handleStaticRequest(request) {
+  const url = new URL(request.url);
+  
   try {
-    // Check cache first
+    // For anime images from AniList, use network-first to ensure fresh content
+    if (url.hostname.includes('anilist.co') && 
+        (request.destination === 'image' || url.pathname.match(/\.(jpg|jpeg|png|gif|webp)$/i))) {
+      
+      try {
+        const networkResponse = await fetch(request);
+        if (networkResponse.ok) {
+          // Cache the image for offline use
+          const cache = await caches.open(STATIC_CACHE);
+          cache.put(request, networkResponse.clone());
+          return networkResponse;
+        }
+      } catch (networkError) {
+        console.log('[SW] Network failed for anime image, trying cache:', url.href);
+        // Fall back to cache if network fails
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+      }
+    }
+    
+    // For other static assets, check cache first
     const cachedResponse = await caches.match(request);
     if (cachedResponse) {
       return cachedResponse;

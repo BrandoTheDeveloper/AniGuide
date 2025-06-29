@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import ServiceWorkerNotifications from "@/components/service-worker-notifications";
+import ServiceWorkerDebug from "@/components/sw-debug";
 
 export default function Profile() {
   const { toast } = useToast();
@@ -130,6 +131,7 @@ export default function Profile() {
 
           {/* Service Worker Notifications */}
           <ServiceWorkerNotifications />
+          <ServiceWorkerDebug />
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
