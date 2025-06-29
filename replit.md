@@ -79,6 +79,7 @@ The application follows a full-stack architecture with clear separation between 
 ```
 Changelog:
 - June 29, 2025. Initial setup
+- June 29, 2025. Updated color scheme to Scarlet (#FF220C), Magnolia (#F3EFF5), and Jet (#2F2D2E) based on user preferences. Redesigned logo with circular gradient design and play button icon.
 ```
 
 ## User Preferences

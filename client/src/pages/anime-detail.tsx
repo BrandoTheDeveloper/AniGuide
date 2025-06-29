@@ -25,19 +25,19 @@ export default function AnimeDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-background text-foreground">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row gap-6 mb-8">
-            <Skeleton className="w-full md:w-64 aspect-[3/4] rounded-xl bg-slate-700" />
+            <Skeleton className="w-full md:w-64 aspect-[3/4] rounded-xl bg-muted" />
             <div className="flex-1 space-y-4">
-              <Skeleton className="h-8 w-3/4 bg-slate-700" />
-              <Skeleton className="h-4 w-1/2 bg-slate-700" />
+              <Skeleton className="h-8 w-3/4 bg-muted" />
+              <Skeleton className="h-4 w-1/2 bg-muted" />
               <div className="flex gap-2">
-                <Skeleton className="h-6 w-16 rounded-full bg-slate-700" />
-                <Skeleton className="h-6 w-16 rounded-full bg-slate-700" />
-                <Skeleton className="h-6 w-16 rounded-full bg-slate-700" />
+                <Skeleton className="h-6 w-16 rounded-full bg-muted" />
+                <Skeleton className="h-6 w-16 rounded-full bg-muted" />
+                <Skeleton className="h-6 w-16 rounded-full bg-muted" />
               </div>
-              <Skeleton className="h-24 w-full bg-slate-700" />
+              <Skeleton className="h-24 w-full bg-muted" />
             </div>
           </div>
         </div>
@@ -47,11 +47,11 @@ export default function AnimeDetail() {
 
   if (error || !anime) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center">
-          <i className="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+          <i className="fas fa-exclamation-triangle text-4xl text-destructive mb-4"></i>
           <h2 className="text-2xl font-bold mb-2">Anime Not Found</h2>
-          <p className="text-slate-400">The anime you're looking for doesn't exist or failed to load.</p>
+          <p className="text-muted-foreground">The anime you're looking for doesn't exist or failed to load.</p>
         </div>
       </div>
     );
@@ -69,12 +69,12 @@ export default function AnimeDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back Button */}
         <Button
           variant="ghost"
-          className="mb-6 text-slate-300 hover:text-white"
+          className="mb-6 text-muted-foreground hover:text-foreground"
           onClick={() => window.history.back()}
         >
           <i className="fas fa-arrow-left mr-2"></i>
@@ -120,24 +120,24 @@ export default function AnimeDetail() {
               </span>
               
               {anime.startDate?.year && (
-                <span className="text-slate-400">{anime.startDate.year}</span>
+                <span className="text-muted-foreground">{anime.startDate.year}</span>
               )}
               
               {anime.episodes && (
-                <span className="text-slate-400">{anime.episodes} Episodes</span>
+                <span className="text-muted-foreground">{anime.episodes} Episodes</span>
               )}
             </div>
             
             <div className="flex flex-wrap gap-2 mb-4">
               {anime.genres.map((genre) => (
-                <span key={genre} className="bg-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm">
+                <span key={genre} className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm">
                   {genre}
                 </span>
               ))}
             </div>
             
             {anime.description && (
-              <p className="text-slate-300 mb-6 leading-relaxed">
+              <p className="text-muted-foreground mb-6 leading-relaxed">
                 {anime.description.replace(/<[^>]*>/g, '')}
               </p>
             )}
@@ -149,7 +149,7 @@ export default function AnimeDetail() {
                   <i className="fas fa-clock"></i>
                   <span className="font-medium">Next Episode</span>
                 </div>
-                <p className="text-white mt-1">
+                <p className="text-foreground mt-1">
                   {formatNextEpisode(anime.nextAiringEpisode)}
                 </p>
               </div>

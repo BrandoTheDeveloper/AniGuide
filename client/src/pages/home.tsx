@@ -40,17 +40,35 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+      <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <i className="fas fa-play text-white text-sm"></i>
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <svg 
+                  width="36" 
+                  height="36" 
+                  viewBox="0 0 36 36" 
+                  className="drop-shadow-lg"
+                >
+                  <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{stopColor: 'hsl(356, 100%, 55%)', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: 'hsl(311, 21%, 94%)', stopOpacity: 1}} />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="18" cy="18" r="16" fill="url(#logoGradient)" />
+                  <path 
+                    d="M14 12 L24 18 L14 24 Z" 
+                    fill="hsl(345, 8%, 18%)" 
+                    className="drop-shadow-sm"
+                  />
+                </svg>
               </div>
-              <h1 className="text-xl font-bold text-white">AniGuide</h1>
+              <h1 className="text-xl font-bold text-foreground">AniGuide</h1>
             </div>
             
             {/* Search Bar */}
@@ -64,13 +82,13 @@ export default function Home() {
             
             {/* Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-accent font-medium">Discover</a>
-              <a href="#" className="text-slate-300 hover:text-white transition-colors">My List</a>
-              <a href="#" className="text-slate-300 hover:text-white transition-colors">Reviews</a>
+              <a href="#" className="text-primary font-medium">Discover</a>
+              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">My List</a>
+              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Reviews</a>
             </nav>
             
             {/* Mobile Menu Button */}
-            <button className="md:hidden text-slate-300 hover:text-white">
+            <button className="md:hidden text-muted-foreground hover:text-foreground">
               <i className="fas fa-bars text-xl"></i>
             </button>
           </div>
@@ -84,7 +102,7 @@ export default function Home() {
         {!searchQuery && (
           <section className="mb-12">
             <div className="relative rounded-2xl overflow-hidden h-64 md:h-80">
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent z-10"></div>
               <img 
                 src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&h=640" 
                 alt="Featured anime artwork" 
@@ -93,7 +111,7 @@ export default function Home() {
               <div className="absolute inset-0 z-20 flex items-center">
                 <div className="px-8 max-w-lg">
                   <h2 className="text-3xl md:text-4xl font-bold mb-4">Discover Amazing Anime</h2>
-                  <p className="text-slate-300 mb-6 line-clamp-3">
+                  <p className="text-muted-foreground mb-6 line-clamp-3">
                     Explore trending anime, read reviews, and find your next favorite series with AniGuide.
                   </p>
                   <div className="flex items-center space-x-4">
@@ -118,8 +136,8 @@ export default function Home() {
                   variant={activeFilter === filter.id ? "default" : "secondary"}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeFilter === filter.id 
-                      ? "bg-primary text-white" 
-                      : "bg-slate-700 hover:bg-slate-600 text-slate-300"
+                      ? "bg-primary text-primary-foreground" 
+                      : "bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {filter.label}
@@ -138,8 +156,8 @@ export default function Home() {
           
           {error && (
             <div className="text-center py-12">
-              <p className="text-red-400 mb-4">Failed to load anime data</p>
-              <p className="text-slate-400">Please check your internet connection and try again.</p>
+              <p className="text-destructive mb-4">Failed to load anime data</p>
+              <p className="text-muted-foreground">Please check your internet connection and try again.</p>
             </div>
           )}
           
@@ -147,9 +165,9 @@ export default function Home() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="space-y-3">
-                  <Skeleton className="aspect-[3/4] w-full rounded-xl bg-slate-700" />
-                  <Skeleton className="h-4 w-3/4 bg-slate-700" />
-                  <Skeleton className="h-3 w-1/2 bg-slate-700" />
+                  <Skeleton className="aspect-[3/4] w-full rounded-xl bg-muted" />
+                  <Skeleton className="h-4 w-3/4 bg-muted" />
+                  <Skeleton className="h-3 w-1/2 bg-muted" />
                 </div>
               ))}
             </div>
@@ -165,9 +183,9 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <i className="fas fa-search text-4xl text-slate-600 mb-4"></i>
-              <p className="text-slate-400 mb-2">No anime found</p>
-              <p className="text-slate-500 text-sm">Try adjusting your search query or filters.</p>
+              <i className="fas fa-search text-4xl text-muted mb-4"></i>
+              <p className="text-muted-foreground mb-2">No anime found</p>
+              <p className="text-muted-foreground/60 text-sm">Try adjusting your search query or filters.</p>
             </div>
           )}
         </section>

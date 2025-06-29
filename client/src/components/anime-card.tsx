@@ -34,7 +34,7 @@ export default function AnimeCard({ anime, onClick }: AnimeCardProps) {
 
   return (
     <div 
-      className="anime-card bg-slate-800 rounded-xl overflow-hidden cursor-pointer"
+      className="anime-card bg-card border border-border rounded-xl overflow-hidden cursor-pointer"
       onClick={onClick}
     >
       <div className="aspect-[3/4] relative">
@@ -73,15 +73,15 @@ export default function AnimeCard({ anime, onClick }: AnimeCardProps) {
           {anime.title.english || anime.title.romaji}
         </h4>
         
-        <p className="text-slate-400 text-xs mb-2">
+        <p className="text-muted-foreground text-xs mb-2">
           {anime.genres.slice(0, 2).join(', ')}
         </p>
         
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-500">
+          <span className="text-muted-foreground/70">
             {anime.startDate?.year || 'Unknown'}
           </span>
-          <span className="text-accent">
+          <span className="text-primary">
             {anime.episodes ? `${anime.episodes} episodes` : 'Movie'}
           </span>
         </div>
