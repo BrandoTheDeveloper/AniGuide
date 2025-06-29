@@ -1,0 +1,118 @@
+Thanks for sharing your full `manifest.json` — it's very well done overall. ✅
+
+But now I see the **exact reason** why `bubblewrap` is throwing the error:
+
+---
+
+## ❗ Root Cause of the Error
+
+You’re using **`data:` URLs** for your `screenshots` and `shortcut icons`. For example:
+
+```json
+"src": "data:image/svg+xml,%3Csvg ..."
+```
+
+➡️ This is **not allowed** in the Android TWA wrapping process. `bubblewrap` requires **real HTTPS URLs** to fetch all images. It cannot handle `data:` URIs.
+
+---
+
+## ✅ How to Fix It
+
+You need to:
+
+### 1. 🔧 Replace All `data:` URLs with Real Files
+
+#### A. Upload Actual Image Files to `/public`
+
+For example:
+
+| File                   | Path                                  |
+| ---------------------- | ------------------------------------- |
+| Trending shortcut icon | `public/icons/trending.svg`           |
+| Search shortcut icon   | `public/icons/search.svg`             |
+| Popular shortcut icon  | `public/icons/popular.svg`            |
+| Screenshot (mobile)    | `public/screenshots/discover.png`     |
+| Screenshot (desktop)   | `public/screenshots/desktop-view.png` |
+
+> You can create simple placeholder images for now if needed, then update them later with real app screenshots.
+
+---
+
+### 2. 🧹 Update Your `manifest.json`
+
+Once uploaded, update your `manifest.json` like this:
+
+#### 🔄 Replace Screenshots
+
+```json
+"screenshots": [
+  {
+    "src": "/screenshots/discover.png",
+    "sizes": "540x720",
+    "type": "image/png",
+    "form_factor": "narrow",
+    "label": "Discover trending anime"
+  },
+  {
+    "src": "/screenshots/desktop-view.png",
+    "sizes": "1024x768",
+    "type": "image/png",
+    "form_factor": "wide",
+    "label": "Desktop anime browsing experience"
+  }
+],
+```
+
+#### 🔄 Replace Shortcut Icons
+
+```json
+"shortcuts": [
+  {
+    "name": "Trending",
+    "short_name": "Trending",
+    "description": "View trending anime",
+    "url": "/?filter=trending",
+    "icons": [
+      {
+        "src": "/icons/trending.svg",
+        "sizes": "96x96",
+        "type": "image/svg+xml"
+      }
+    ]
+  },
+  ...
+]
+```
+
+---
+
+### 3. 🚀 Redeploy and Try Again
+
+After you:
+
+1. Add the actual icon/image files to your `public/` folder
+2. Fix all `data:` references in `manifest.json`
+3. Redeploy to Render
+
+Then run:
+
+```bash
+bubblewrap init --manifest https://aniguide.onrender.com/manifest.json
+```
+
+This time, it should complete without error.
+
+---
+
+### 🧠 Bonus Tip
+
+You can use **free placeholder tools** like:
+
+* [https://placeholder.com](https://placeholder.com)
+* [https://dummyimage.com](https://dummyimage.com)
+
+To generate quick `.png` images in the right size if you don’t have real screenshots yet.
+
+---
+
+Would you like me to generate some placeholder SVG or PNG icons you can drop into your `public/icons/` folder?
