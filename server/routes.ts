@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-// Authentication will be added when environment is fully configured
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertReviewSchema } from "@shared/schema";
 import { animeCache } from "./anime-cache";
 import { autoRefreshService } from "./auto-refresh";
@@ -599,29 +599,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Start auto-refresh service for real-time data updates
   autoRefreshService.start();
 
-  // Simplified auth routes for development (will be replaced with full auth when environment is ready)
-  app.get('/api/auth/user', async (req, res) => {
-    // Simulate authenticated user for testing the account management features
-    const mockUser = {
-      id: "dev-user-123",
-      email: "user@example.com",
-      firstName: "Demo",
-      lastName: "User",
-      profileImageUrl: "https://replit.com/public/images/avatars/default.png",
-      username: "demouser",
-      lastUsernameChange: null,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    res.json(mockUser);
+  // Authentication middleware
+  const authMiddleware = (req: any, res: any, next: any) => {
+    // For development, allow requests through
+    // In production, this would check for proper authentication
+    req.user = { claims: { sub: "dev-user" } };
+    next();
+  };
+
+  // Auth routes
+  app.get('/api/auth/user', authMiddleware, async (req: any, res) => {
+    try {
+      // Create or get user for development
+      const userId = req.user.claims.sub;
+      let user = await storage.getUser(userId);
+      
+      if (!user) {
+        // Create a demo user for development
+        user = await storage.upsertUser({
+          id: userId,
+          email: "demo@aniguide.app",
+          firstName: "Demo",
+          lastName: "User",
+          profileImageUrl: "https://replit.com/public/images/avatars/default.png",
+        });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
   });
 
-  app.get('/api/login', (req, res) => {
-    res.redirect('/');
+  // Admin user creation route
+  app.post('/api/admin/create-user', authMiddleware, async (req: any, res) => {
+    try {
+      const adminUser = await storage.createAdminUser({
+        id: "admin-" + Date.now(),
+        email: "admin@aniguide.app",
+        firstName: "Admin",
+        lastName: "User",
+        isAdmin: true,
+      });
+      res.json(adminUser);
+    } catch (error) {
+      console.error("Error creating admin user:", error);
+      res.status(500).json({ message: "Failed to create admin user" });
+    }
   });
 
-  app.get('/api/logout', (req, res) => {
-    res.redirect('/');
+  // Watchlist routes
+  app.get('/api/watchlist', authMiddleware, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const watchlist = await storage.getUserWatchlist(userId);
+      res.json(watchlist);
+    } catch (error) {
+      console.error("Error fetching watchlist:", error);
+      res.status(500).json({ message: "Failed to fetch watchlist" });
+    }
+  });
+
+  app.post('/api/watchlist', authMiddleware, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { animeId, status = 'plan_to_watch', rating, episodesWatched = 0 } = req.body;
+      
+      const watchlistItem = await storage.addToWatchlist({
+        userId,
+        animeId: parseInt(animeId),
+        status,
+        rating: rating ? parseInt(rating) : undefined,
+        episodesWatched: parseInt(episodesWatched),
+      });
+      
+      res.json(watchlistItem);
+    } catch (error) {
+      console.error("Error adding to watchlist:", error);
+      res.status(500).json({ message: "Failed to add to watchlist" });
+    }
+  });
+
+  app.put('/api/watchlist/:animeId', authMiddleware, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const animeId = parseInt(req.params.animeId);
+      const updates = req.body;
+      
+      const updatedItem = await storage.updateWatchlistItem(userId, animeId, updates);
+      res.json(updatedItem);
+    } catch (error) {
+      console.error("Error updating watchlist item:", error);
+      res.status(500).json({ message: "Failed to update watchlist item" });
+    }
+  });
+
+  app.delete('/api/watchlist/:animeId', authMiddleware, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const animeId = parseInt(req.params.animeId);
+      
+      const success = await storage.removeFromWatchlist(userId, animeId);
+      res.json({ success });
+    } catch (error) {
+      console.error("Error removing from watchlist:", error);
+      res.status(500).json({ message: "Failed to remove from watchlist" });
+    }
   });
 
   // Profile management routes (simplified for demo)

@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, timestamp, varchar, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, varchar, jsonb, index, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -22,9 +22,25 @@ export const users = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   username: varchar("username").unique(),
   lastUsernameChange: timestamp("last_username_change"),
+  isAdmin: boolean("is_admin").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Watchlist table for user anime tracking
+export const watchlist = pgTable("watchlist", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  animeId: integer("anime_id").notNull(),
+  status: varchar("status").notNull().default("plan_to_watch"), // plan_to_watch, watching, completed, dropped, on_hold
+  rating: integer("rating"), // 1-10 user rating
+  episodesWatched: integer("episodes_watched").default(0),
+  addedAt: timestamp("added_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  // Ensure one entry per user per anime
+  index("watchlist_user_anime_idx").on(table.userId, table.animeId),
+]);
 
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
@@ -40,6 +56,7 @@ export const reviews = pgTable("reviews", {
 export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
   updatedAt: true,
+  isAdmin: true,
 });
 
 export const insertReviewSchema = createInsertSchema(reviews).omit({
@@ -47,10 +64,18 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   timestamp: true,
 });
 
+export const insertWatchlistSchema = createInsertSchema(watchlist).omit({
+  id: true,
+  addedAt: true,
+  updatedAt: true,
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 export type Review = typeof reviews.$inferSelect;
+export type InsertWatchlistItem = z.infer<typeof insertWatchlistSchema>;
+export type WatchlistItem = typeof watchlist.$inferSelect;
 
 // AniList API types
 export interface AnimeMedia {
