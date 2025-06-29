@@ -3,6 +3,13 @@
   "short_name": "AniGuide",
   "description": "Discover trending anime, read reviews, and track your favorite series",
   "start_url": "/",
+  "scope": "/",
+  "protocol_handlers": [
+    {
+      "protocol": "web+aniguide",
+      "url": "/?anime=%s"
+    }
+  ],
   "display": "standalone",
   "background_color": "#06070E",
   "theme_color": "#9C0D38",
