@@ -68,6 +68,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Skip problematic external requests that cause 404s in production
+  if (url.hostname.includes('apollographql.com') ||
+      url.hostname.includes('render.com') ||
+      url.pathname.includes('apollo') ||
+      url.pathname.includes('/docs/react/') ||
+      url.search.includes('apollo')) {
+    return;
+  }
+
+  // Skip cross-origin requests that aren't from our allowed domains
+  if (url.origin !== self.location.origin && 
+      !url.hostname.includes('anilist.co') && 
+      !url.hostname.includes('googlefonts') &&
+      !url.hostname.includes('cdnjs.cloudflare.com')) {
+    return;
+  }
+
   // API requests - cache with network fallback
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(handleApiRequest(request));

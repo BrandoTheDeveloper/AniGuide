@@ -48,7 +48,13 @@ export const queryClient = new QueryClient({
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,
-      retry: false,
+      retry: (failureCount, error) => {
+        // Don't retry 404 errors or network failures
+        if (error instanceof Error && (error.message.includes('404') || error.message.includes('Failed to fetch'))) {
+          return false;
+        }
+        return failureCount < 2;
+      },
     },
     mutations: {
       retry: false,
