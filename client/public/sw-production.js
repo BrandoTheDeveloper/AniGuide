@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'aniguide-v5';
+const CACHE_VERSION = 'aniguide-v6';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -77,9 +77,21 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Skip ALL external requests except our own API
+  // Allow anime images and essential external resources
+  const allowedDomains = [
+    'anilist.co',
+    's4.anilist.co',
+    'googlefonts.googleapis.com',
+    'fonts.gstatic.com',
+    'cdnjs.cloudflare.com'
+  ];
+  
+  // Skip external requests except for allowed domains
   if (url.origin !== self.location.origin) {
-    return;
+    const isAllowedDomain = allowedDomains.some(domain => url.hostname.includes(domain));
+    if (!isAllowedDomain) {
+      return;
+    }
   }
 
   // API requests - cache with network fallback
