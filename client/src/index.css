@@ -2,105 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: hsl(234, 25%, 4%);
-  --foreground: hsl(329, 18%, 85%);
-  --muted: hsl(234, 25%, 8%);
-  --muted-foreground: hsl(329, 18%, 65%);
-  --popover: hsl(234, 25%, 4%);
-  --popover-foreground: hsl(329, 18%, 85%);
-  --card: hsl(234, 25%, 6%);
-  --card-foreground: hsl(329, 18%, 85%);
-  --border: hsl(234, 25%, 12%);
-  --input: hsl(234, 25%, 12%);
-  --primary: hsl(345, 87%, 33%);
-  --primary-foreground: hsl(329, 18%, 85%);
-  --secondary: hsl(234, 25%, 8%);
-  --secondary-foreground: hsl(329, 18%, 75%);
-  --accent: hsl(329, 18%, 85%);
-  --accent-foreground: hsl(234, 25%, 4%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(329, 18%, 85%);
-  --ring: hsl(345, 87%, 33%);
-  --radius: 0.75rem;
-}
-
-.dark {
-  --background: hsl(234, 25%, 2%);
-  --foreground: hsl(329, 18%, 85%);
-  --muted: hsl(234, 25%, 6%);
-  --muted-foreground: hsl(329, 18%, 65%);
-  --popover: hsl(234, 25%, 2%);
-  --popover-foreground: hsl(329, 18%, 85%);
-  --card: hsl(234, 25%, 3%);
-  --card-foreground: hsl(329, 18%, 85%);
-  --border: hsl(234, 25%, 8%);
-  --input: hsl(234, 25%, 8%);
-  --primary: hsl(345, 87%, 33%);
-  --primary-foreground: hsl(329, 18%, 85%);
-  --secondary: hsl(234, 25%, 6%);
-  --secondary-foreground: hsl(329, 18%, 75%);
-  --accent: hsl(329, 18%, 85%);
-  --accent-foreground: hsl(234, 25%, 2%);
-  --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(329, 18%, 85%);
-  --ring: hsl(345, 87%, 33%);
-  --radius: 0.75rem;
-}
-
 @layer base {
   * {
     @apply border-border;
   }
-
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply bg-background text-foreground;
   }
 }
 
-@layer components {
-  .anime-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .anime-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(107, 70, 193, 0.15);
-  }
-  
-  .star-rating {
-    display: inline-flex;
-    gap: 2px;
-  }
-  
-  .star {
-    color: hsl(234, 25%, 45%);
-    cursor: pointer;
-    transition: color 0.1s ease;
-  }
-  
-  .star.active,
-  .star:hover {
-    color: hsl(345, 87%, 33%);
-  }
-  
-  .loading-shimmer {
-    background: linear-gradient(90deg, hsl(234, 25%, 8%) 25%, hsl(329, 18%, 65%) 50%, hsl(234, 25%, 8%) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
-  
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  
-  .scroll-container {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
-  .scroll-container::-webkit-scrollbar {
-    display: none;
-  }
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(0, 0%, 0%);
+  --muted: hsl(0, 0%, 96%);
+  --muted-foreground: hsl(0, 0%, 45%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(0, 0%, 0%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0, 0%, 0%);
+  --border: hsl(0, 0%, 85%);
+  --input: hsl(0, 0%, 85%);
+  --primary: hsl(0, 0%, 0%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(0, 0%, 96%);
+  --secondary-foreground: hsl(0, 0%, 9%);
+  --accent: hsl(0, 0%, 96%);
+  --accent-foreground: hsl(0, 0%, 9%);
+  --destructive: hsl(0, 84%, 45%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(0, 0%, 0%);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: hsl(0, 0%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(0, 0%, 14.9%);
+  --muted-foreground: hsl(0, 0%, 63.9%);
+  --popover: hsl(0, 0%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(0, 0%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 14.9%);
+  --input: hsl(0, 0%, 14.9%);
+  --primary: hsl(0, 0%, 98%);
+  --primary-foreground: hsl(0, 0%, 9%);
+  --secondary: hsl(0, 0%, 14.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(0, 0%, 14.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(0, 0%, 83.1%);
+  --radius: 0.75rem;
+}
+
+/* Anime hero image positioning */
+.anime-hero {
+  background-image: url('/anime-hero-image_1751209694703.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* High contrast focus indicators for accessibility */
+*:focus-visible {
+  outline: 3px solid hsl(0, 0%, 0%);
+  outline-offset: 2px;
+}
+
+.dark *:focus-visible {
+  outline: 3px solid hsl(0, 0%, 100%);
+  outline-offset: 2px;
+}
+
+/* Ensure minimum contrast ratios */
+.text-muted-foreground {
+  color: hsl(0, 0%, 30%);
+}
+
+.dark .text-muted-foreground {
+  color: hsl(0, 0%, 70%);
+}
+
+/* High contrast buttons */
+.btn-primary {
+  background-color: hsl(0, 0%, 0%);
+  color: hsl(0, 0%, 100%);
+  border: 2px solid hsl(0, 0%, 0%);
+}
+
+.dark .btn-primary {
+  background-color: hsl(0, 0%, 100%);
+  color: hsl(0, 0%, 0%);
+  border: 2px solid hsl(0, 0%, 100%);
+}
+
+/* High contrast links */
+a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  text-decoration-thickness: 3px;
+}
+
+/* Enhanced card shadows for better depth perception */
+.card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.dark .card {
+  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.05);
 }

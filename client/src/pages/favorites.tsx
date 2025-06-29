@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import AnimeCard from "@/components/anime-card";
 import AnimeDetailModal from "@/components/anime-detail-modal";
+import ProtectedFeature from "@/components/protected-feature";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -106,78 +107,90 @@ export default function Favorites() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">My Watchlist</h1>
-        <p className="text-muted-foreground">
-          Keep track of your anime journey
-        </p>
+      <div className="flex items-center gap-2 mb-6">
+        <Heart className="w-6 h-6 text-red-500" />
+        <h1 className="text-3xl font-bold">My Watchlist</h1>
       </div>
 
-      <div className="space-y-8">
-        {Object.entries(groupedWatchlist).map(([status, items]) => (
-          <div key={status}>
-            <div className="flex items-center gap-3 mb-4">
-              <Badge variant="secondary" className={`${getStatusColor(status)} flex items-center gap-2`}>
+      <ProtectedFeature
+        featureName="Watchlist"
+        description="Track your favorite anime, manage watch status, and rate series you've completed."
+        className="mb-8"
+      >
+        <div className="mb-8">
+          <p className="text-muted-foreground">
+            Keep track of your anime journey
+          </p>
+        </div>
+
+        <div className="space-y-8">
+          {Object.entries(groupedWatchlist).map(([status, items]) => (
+            <div key={status}>
+              <div className="flex items-center gap-3 mb-4">
                 {getStatusIcon(status)}
-                {getStatusLabel(status)}
-                <span className="ml-1">({items.length})</span>
-              </Badge>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {items.map((item) => (
-                <Card key={item.id} className="cursor-pointer hover:shadow-lg transition-shadow">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
-                      {item.anime ? (
-                        <img
-                          src={item.anime.coverImage.large}
-                          alt={item.anime.title.english || item.anime.title.romaji}
-                          className="w-full h-full object-cover rounded-lg"
-                          onClick={() => item.anime && handleAnimeClick(item.anime)}
-                        />
-                      ) : (
-                        <div className="text-center p-4">
-                          <Heart className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                          <p className="text-sm text-muted-foreground">Anime #{item.animeId}</p>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      {item.rating && (
-                        <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="text-sm font-medium">{item.rating}/10</span>
-                        </div>
-                      )}
-                      
-                      {(item.episodesWatched && item.episodesWatched > 0) && (
-                        <div className="text-sm text-muted-foreground">
-                          Episodes: {item.episodesWatched}
-                          {item.anime?.episodes && ` / ${item.anime.episodes}`}
-                        </div>
-                      )}
-                      
-                      <div className="text-xs text-muted-foreground">
-                        Added {item.addedAt ? new Date(item.addedAt).toLocaleDateString() : 'Recently'}
+                <h2 className="text-xl font-semibold capitalize">
+                  {getStatusLabel(status)}
+                </h2>
+                <Badge variant="secondary" className={getStatusColor(status)}>
+                  {items.length}
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {items.map((item) => (
+                  <Card key={item.id} className="cursor-pointer hover:shadow-lg transition-shadow">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
+                        {item.anime ? (
+                          <img
+                            src={item.anime.coverImage.large}
+                            alt={item.anime.title.english || item.anime.title.romaji}
+                            className="w-full h-full object-cover rounded-lg"
+                            onClick={() => item.anime && handleAnimeClick(item.anime)}
+                          />
+                        ) : (
+                          <div className="text-center p-4">
+                            <Heart className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                            <p className="text-sm text-muted-foreground">Anime #{item.animeId}</p>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      
+                      <div className="space-y-2">
+                        {item.rating && (
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span className="text-sm font-medium">{item.rating}/10</span>
+                          </div>
+                        )}
+                        
+                        {(item.episodesWatched && item.episodesWatched > 0) && (
+                          <div className="text-sm text-muted-foreground">
+                            Episodes: {item.episodesWatched}
+                            {item.anime?.episodes && ` / ${item.anime.episodes}`}
+                          </div>
+                        )}
+                        
+                        <div className="text-xs text-muted-foreground">
+                          Added {item.addedAt ? new Date(item.addedAt).toLocaleDateString() : 'Recently'}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {selectedAnime && (
-        <AnimeDetailModal
-          anime={selectedAnime}
-          isOpen={!!selectedAnime}
-          onClose={() => setSelectedAnime(null)}
-        />
-      )}
+        {selectedAnime && (
+          <AnimeDetailModal
+            anime={selectedAnime}
+            isOpen={!!selectedAnime}
+            onClose={() => setSelectedAnime(null)}
+          />
+        )}
+      </ProtectedFeature>
     </div>
   );
 }

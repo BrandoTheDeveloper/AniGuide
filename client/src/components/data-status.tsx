@@ -36,23 +36,7 @@ export default function DataStatus() {
 
   return (
     <div className="flex items-center gap-2">
-      <Badge 
-        variant={isDataFresh ? "default" : "secondary"} 
-        className="text-xs"
-      >
-        {isDataFresh ? (
-          <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-        ) : (
-          <WifiOff className="h-3 w-3 mr-1" />
-        )}
-        {isDataFresh ? "Live Data" : "Cached"}
-      </Badge>
-      
-      {totalCacheItems > 0 && (
-        <Badge variant="outline" className="text-xs">
-          {totalCacheItems} items cached
-        </Badge>
-      )}
+
     </div>
   );
 }

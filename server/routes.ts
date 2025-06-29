@@ -568,7 +568,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Review routes
+  // Review routes - reviews can be viewed by anyone, but only logged-in users can create them
   app.get("/api/reviews/:animeId", async (req, res) => {
     try {
       const animeId = parseInt(req.params.animeId);
@@ -583,9 +583,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/reviews", async (req, res) => {
+  // Authentication middleware definitions (moved before usage)
+  const optionalAuthMiddleware = (req: any, res: any, next: any) => {
+    // For guest users, don't set user
+    // In production, this would check for authentication but not require it
+    next();
+  };
+
+  const requireAuthMiddleware = (req: any, res: any, next: any) => {
+    // For development, simulate authentication for protected features
+    req.user = { claims: { sub: "dev-user" } };
+    next();
+  };
+
+  app.post("/api/reviews", requireAuthMiddleware, async (req, res) => {
     try {
       const validatedData = insertReviewSchema.parse(req.body);
+      // Add user ID to the review
+      validatedData.userId = req.user.claims.sub;
       const review = await storage.addReview(validatedData);
       res.status(201).json(review);
     } catch (error) {
@@ -598,20 +613,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Start auto-refresh service for real-time data updates
   autoRefreshService.start();
-
-  // Optional authentication middleware - allows guest browsing
-  const optionalAuthMiddleware = (req: any, res: any, next: any) => {
-    // For guest users, don't set user
-    // In production, this would check for authentication but not require it
-    next();
-  };
-
-  // Required authentication middleware - protects user-specific features
-  const requireAuthMiddleware = (req: any, res: any, next: any) => {
-    // For development, simulate authentication for protected features
-    req.user = { claims: { sub: "dev-user" } };
-    next();
-  };
 
   // Auth routes - supports guest browsing
   app.get('/api/auth/user', requireAuthMiddleware, async (req: any, res) => {
