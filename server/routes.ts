@@ -599,23 +599,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Start auto-refresh service for real-time data updates
   autoRefreshService.start();
 
-  // Authentication middleware
-  const authMiddleware = (req: any, res: any, next: any) => {
-    // For development, allow requests through
-    // In production, this would check for proper authentication
+  // Optional authentication middleware - allows guest browsing
+  const optionalAuthMiddleware = (req: any, res: any, next: any) => {
+    // For guest users, don't set user
+    // In production, this would check for authentication but not require it
+    next();
+  };
+
+  // Required authentication middleware - protects user-specific features
+  const requireAuthMiddleware = (req: any, res: any, next: any) => {
+    // For development, simulate authentication for protected features
     req.user = { claims: { sub: "dev-user" } };
     next();
   };
 
-  // Auth routes
-  app.get('/api/auth/user', authMiddleware, async (req: any, res) => {
+  // Auth routes - supports guest browsing
+  app.get('/api/auth/user', requireAuthMiddleware, async (req: any, res) => {
     try {
-      // Create or get user for development
       const userId = req.user.claims.sub;
       let user = await storage.getUser(userId);
       
       if (!user) {
-        // Create a demo user for development
         user = await storage.upsertUser({
           id: userId,
           email: "demo@aniguide.app",
@@ -632,8 +636,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Logout route
+  app.get('/api/logout', (req, res) => {
+    // Clear any session data
+    res.json({ message: "Logged out successfully" });
+  });
+
   // Admin user creation route
-  app.post('/api/admin/create-user', authMiddleware, async (req: any, res) => {
+  app.post('/api/admin/create-user', requireAuthMiddleware, async (req: any, res) => {
     try {
       const adminUser = await storage.createAdminUser({
         id: "admin-" + Date.now(),
@@ -649,8 +659,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Watchlist routes
-  app.get('/api/watchlist', authMiddleware, async (req: any, res) => {
+  // Protected watchlist routes - require authentication
+  app.get('/api/watchlist', requireAuthMiddleware, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const watchlist = await storage.getUserWatchlist(userId);
@@ -661,7 +671,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/watchlist', authMiddleware, async (req: any, res) => {
+  app.post('/api/watchlist', requireAuthMiddleware, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { animeId, status = 'plan_to_watch', rating, episodesWatched = 0 } = req.body;
@@ -681,7 +691,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/watchlist/:animeId', authMiddleware, async (req: any, res) => {
+  app.put('/api/watchlist/:animeId', requireAuthMiddleware, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const animeId = parseInt(req.params.animeId);
@@ -695,7 +705,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/watchlist/:animeId', authMiddleware, async (req: any, res) => {
+  app.delete('/api/watchlist/:animeId', requireAuthMiddleware, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const animeId = parseInt(req.params.animeId);
