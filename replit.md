@@ -10,7 +10,7 @@ The application follows a full-stack architecture with clear separation between 
 
 - **Frontend**: React with TypeScript, Vite build tool, Tailwind CSS for styling
 - **Backend**: Express.js server with TypeScript
-- **Database**: PostgreSQL with Drizzle ORM (configured but currently using in-memory storage)
+- **Database**: PostgreSQL with Drizzle ORM (fully integrated with DatabaseStorage)
 - **External API**: AniList GraphQL API for anime data
 - **PWA Features**: Service worker, web manifest, offline capabilities
 
@@ -26,7 +26,7 @@ The application follows a full-stack architecture with clear separation between 
 ### Backend Architecture
 - **Express Server**: RESTful API with middleware for logging and error handling
 - **Route Handlers**: Separate routing module for API endpoints
-- **Storage Layer**: Abstract storage interface with in-memory implementation
+- **Storage Layer**: Abstract storage interface with PostgreSQL database implementation
 - **Development Tools**: Vite integration for development mode
 
 ### Data Management
@@ -70,7 +70,7 @@ The application follows a full-stack architecture with clear separation between 
 
 ### Hosting Requirements
 - Node.js runtime for Express server
-- PostgreSQL database (currently using in-memory storage)
+- PostgreSQL database (fully integrated with Drizzle ORM)
 - HTTPS for PWA features and service worker
 - Static file serving capabilities
 
@@ -80,6 +80,8 @@ The application follows a full-stack architecture with clear separation between 
 Changelog:
 - June 29, 2025. Initial setup
 - June 29, 2025. Updated color scheme to Scarlet (#FF220C), Magnolia (#F3EFF5), and Jet (#2F2D2E) based on user preferences. Redesigned logo with circular gradient design and play button icon.
+- June 29, 2025. Integrated PostgreSQL database with Drizzle ORM, replacing in-memory storage with DatabaseStorage implementation.
+- June 29, 2025. Updated color scheme to Black (#06070E), Claret (#9C0D38), and Timberwolf (#DAD2D8) based on user's new color palette preference.
 ```
 
 ## User Preferences
