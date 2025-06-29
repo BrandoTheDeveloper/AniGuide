@@ -1,0 +1,123 @@
+
+Prompt for Replit AI Agent: Build "AniGuide" - An Anime Review & Discovery PWA
+Project Name: AniGuide
+Goal: Develop a Progressive Web App (PWA) using Next.js and Tailwind CSS that allows users to discover anime, view detailed information including airing status, write and read local reviews, and be installable on devices, with a clear path to Google Play Store via Trusted Web Activity (TWA).
+Core Principles: The code must be readable, efficient, SEO-friendly, and include clear comments for complex logic. Use TypeScript throughout. Apply a mobile-first design approach with Tailwind CSS.
+Phase 1: Core Application Structure & Data Fetching
+Task: Set up the Next.js project with Tailwind CSS, integrate with the AniList GraphQL API, and create the basic page/component structure for anime listings and details.
+Instructions:
+ * Project Initialization:
+   * Initialize a new Next.js project named aniguide.
+   * Use TypeScript, ESLint, and the src/ directory.
+   * Crucially, ensure Tailwind CSS is fully configured during setup.
+   * Opt into the App Router (--app).
+ * Tailwind CSS Setup Verification:
+   * Confirm tailwind.config.ts has the correct content paths for src/app, src/components.
+   * Confirm src/app/globals.css imports Tailwind's base, components, and utilities.
+   * Add a simple test element (e.g., in src/app/page.tsx) with a distinct Tailwind class (e.g., text-blue-500 text-3xl font-bold) to verify styling.
+ * AniList API Integration:
+   * Install graphql-request for making API calls.
+   * Create a utility file (e.g., src/lib/anilist.ts) to handle GraphQL queries.
+   * Define a GraphQL query to fetch:
+     * Anime id, title (English and Romaji), coverImage.large, description (shortened/truncated for lists).
+     * For the detail page: genres, startDate, endDate, status, averageScore, and tags { name } (important for SEO keywords).
+     * Crucially for airing status: nextAiringEpisode { airingAt, episode }.
+   * Implement functions to fetch a list of trending/popular anime and a single anime by ID.
+ * Page Structure & Routing:
+   * Create src/app/page.tsx for the Home/Discover page. This will display a list of anime.
+   * Create src/app/anime/[id]/page.tsx for dynamic Anime Detail Pages.
+ * Component Design (Initial):
+   * Create a src/components/AnimeCard.tsx component. It should receive anime data as props and display the cover image, title, and status. Apply basic Tailwind CSS for layout and appearance (e.g., w-full h-48 object-cover rounded-lg).
+   * Create a src/components/AnimeDetails.tsx component. This will be responsible for rendering all fetched details of a single anime. Include conditional rendering for nextAiringEpisode (e.g., "Next episode airs on [Date] (Episode [Number])"). Use Tailwind for layout (e.g., flex flex-col md:flex-row gap-4).
+ * Initial Page Implementation:
+   * In src/app/page.tsx: Fetch a list of popular anime from AniList API and display them using the AnimeCard component in a responsive grid (grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4).
+   * In src/app/anime/[id]/page.tsx: Fetch the specific anime details using the ID from the URL and render them using the AnimeDetails component.
+Phase 2: Enhancing User Experience & Data Persistence (Reviews)
+Task: Implement user review submission and display, persisting data locally using IndexedDB.
+Instructions:
+ * IndexedDB Setup (with Dexie.js):
+   * Install dexie.
+   * Create a utility file (e.g., src/lib/db.ts) to set up a Dexie database.
+   * Define a store for reviews with the schema: id, animeId, userId, rating, text, timestamp. Use id as the primary key and animeId for indexing.
+ * Review Data Structure & Functions:
+   * Define TypeScript interfaces for Review data.
+   * Implement asynchronous functions in src/lib/db.ts to:
+     * addReview(review: Review): Adds a new review.
+     * getReviewsForAnime(animeId: number): Retrieves all reviews for a specific anime.
+ * Review Components:
+   * Create a src/components/ReviewForm.tsx component:
+     * Takes animeId as a prop.
+     * Includes a textarea for review text and a rating input (e.g., 1-5 stars, could be simple radio buttons or a selection).
+     * On submission, stores the review in IndexedDB.
+     * Provide basic validation (e.g., review text not empty).
+     * Style with Tailwind.
+   * Create a src/components/ReviewList.tsx component:
+     * Takes animeId as a prop.
+     * Fetches and displays reviews for that anime from IndexedDB.
+     * Display reviewer ID (can be a simple "User 123" for local reviews), rating, text, and timestamp.
+     * Style with Tailwind.
+ * Integration into Anime Detail Page:
+   * In src/app/anime/[id]/page.tsx: Render the ReviewList and ReviewForm components below the anime details.
+ * Basic Search Functionality:
+   * Add a search input component (e.g., src/components/SearchBar.tsx) to src/app/page.tsx or a dedicated search page.
+   * Implement an AniList API call to search anime by title.
+   * Display search results similar to the main listing.
+Phase 3: PWA Implementation & Offline Capabilities
+Task: Configure the PWA manifest and service worker for installability and offline caching.
+Instructions:
+ * PWA Integration (next-pwa):
+   * Install next-pwa.
+   * Configure next.config.js to enable next-pwa.
+   * Set dest: 'public' and register: true.
+ * Manifest File (public/manifest.json):
+   * Ensure the manifest.json is correctly generated/configured by next-pwa (or create if manual setup is needed based on next-pwa version/docs).
+   * Set name, short_name to "AniGuide".
+   * Define start_url, display (standalone), background_color, theme_color.
+   * Include at least one icon of size 512x512 pixels.
+ * Service Worker Strategy:
+   * Verify next-pwa generates service-worker.js and registers it.
+   * Ensure next-pwa is configured for offline-first caching strategies for both static assets (app shell) and dynamic data (AniList API responses for viewed anime details and lists). StaleWhileRevalidate is a good default for API data.
+   * Verify that once an anime detail page is viewed, it can be accessed offline.
+Phase 4: Polish & Google Play Store (TWA)
+Task: Refine UI/UX, add error handling, ensure SEO, and outline steps for TWA.
+Instructions:
+ * Responsive Design & UI/UX Refinements (Tailwind CSS):
+   * Apply Tailwind's responsive prefixes (e.g., sm:, md:, lg:) to ensure layout adapts well to different screen sizes.
+   * Refine overall visual appeal, spacing, typography using Tailwind classes.
+   * Add basic animations or transitions where appropriate (e.g., hover effects on cards).
+ * Error Handling & Loading States:
+   * Implement loading indicators (e.g., spinners) for API calls.
+   * Display user-friendly messages for network errors or when no data is found.
+   * Use Next.js error.tsx for app-level error boundaries in the App Router.
+ * SEO Optimizations:
+   * Use next/head (or Head from next/head in App Router components) to dynamically set page titles and meta descriptions for discovery and detail pages.
+   * Crucially, for anime detail pages, generate and include <meta name="keywords"> in the head element. These keywords should be a comma-separated list of the anime's genres and tags fetched from the AniList API. Also include relevant general keywords like "anime review", "anime guide", "AniGuide", etc.
+   * Ensure semantic HTML (e.g., <header>, <main>, <nav>, <footer>, <h1>, <h2>).
+   * Optimize images using next/image.
+ * Google Play Store Preparation (Conceptual & Step-by-step):
+   * Agent should not generate Android code here. Instead, it should provide a step-by-step guide for the human developer on how to:
+     * Deploy the PWA to a live URL (e.g., Vercel).
+     * Create the assetlinks.json file to establish digital asset links for TWA.
+     * Set up a minimal Android Studio project with a Trusted Web Activity.
+     * Configure the Android project's AndroidManifest.xml with the PWA's URL and the assetlinks.json relationship.
+     * Generate an AAB (Android App Bundle) for Play Store submission.
+     * Mention the requirements for icons and splash screens within the Android project.
+Initial Files/Folders to Create:
+ * src/app/page.tsx
+ * src/app/anime/[id]/page.tsx
+ * src/components/AnimeCard.tsx
+ * src/components/AnimeDetails.tsx
+ * src/components/ReviewForm.tsx
+ * src/components/ReviewList.tsx
+ * src/components/SearchBar.tsx
+ * src/lib/anilist.ts
+ * src/lib/db.ts
+ * tailwind.config.ts (already generated by Next.js setup)
+ * src/app/globals.css (already generated by Next.js setup)
+ * next.config.js (for PWA config)
+Execution Instructions for Agent:
+ * Start with Phase 1, Step 1 (Project Initialization).
+ * For each subsequent step, confirm completion before moving to the next.
+ * Provide code snippets and explanations incrementally.
+ * Prioritize modularity and reusability of components.
+ * Add comments to all generated code.
