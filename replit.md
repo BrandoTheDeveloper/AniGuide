@@ -84,6 +84,7 @@ Changelog:
 - June 29, 2025. Updated color scheme to Black (#06070E), Claret (#9C0D38), and Timberwolf (#DAD2D8) based on user's new color palette preference.
 - June 29, 2025. Enhanced review system with season/episode tracking, episode lists, related anime display, and tabbed detail view. Added comprehensive anime relations and episode information from AniList API.
 - June 29, 2025. Implemented comprehensive anime data coverage with 6 categories (Trending, Popular, Airing Now, Upcoming, Top Rated, All Time Popular), auto-refresh service for real-time updates every 30 minutes, data status indicator, and manual refresh capability. Added custom anime hero image.
+- June 29, 2025. Enhanced PWA for full Google Play compatibility with advanced service worker (background sync, push notifications, periodic sync), comprehensive manifest with shortcuts and app identity, install prompts, multiple icon sizes including maskable icons, app screenshots, and Android-specific features like digital asset links.
 ```
 
 ## User Preferences

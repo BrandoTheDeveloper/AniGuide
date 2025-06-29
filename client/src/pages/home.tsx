@@ -5,6 +5,7 @@ import SearchBar from "@/components/search-bar";
 import AnimeDetailModal from "@/components/anime-detail-modal";
 import MobileNav from "@/components/mobile-nav";
 import DataStatus from "@/components/data-status";
+import InstallPrompt from "@/components/install-prompt";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefreshCw } from "lucide-react";
@@ -134,8 +135,8 @@ export default function Home() {
             <div className="relative rounded-2xl overflow-hidden h-64 md:h-80">
               <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent z-10"></div>
               <img 
-                src="/attached_assets/anime-hero-image_1751209694703.webp" 
-                alt="Epic anime characters in dramatic landscape" 
+                src="https://preview.redd.it/u47pd24jg4z41.jpg?width=1080&crop=smart&auto=webp&s=b2c6f562c1a5ddaaefeb3afd62a4af50f09da20d" 
+                alt="Anime and manga collection artwork" 
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 z-20 flex items-center">
@@ -223,6 +224,9 @@ export default function Home() {
 
       {/* Mobile Navigation */}
       <MobileNav />
+
+      {/* Install Prompt */}
+      <InstallPrompt />
 
       {/* Anime Detail Modal */}
       {selectedAnime && (
