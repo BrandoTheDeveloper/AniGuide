@@ -14,6 +14,8 @@ export const reviews = pgTable("reviews", {
   userId: text("user_id").notNull(),
   rating: integer("rating").notNull(),
   text: text("text").notNull(),
+  season: text("season"),
+  episode: integer("episode"),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
 
@@ -68,6 +70,25 @@ export interface AnimeMedia {
   episodes?: number;
   season?: string;
   seasonYear?: number;
+  relations?: {
+    edges: Array<{
+      id: number;
+      relationType: string;
+      node: {
+        id: number;
+        title: {
+          english?: string;
+          romaji: string;
+        };
+        type: string;
+        format: string;
+        episodes?: number;
+        coverImage: {
+          medium: string;
+        };
+      };
+    }>;
+  };
 }
 
 export interface AniListResponse {

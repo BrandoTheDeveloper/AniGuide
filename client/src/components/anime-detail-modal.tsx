@@ -1,7 +1,10 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReviewForm from "./review-form";
 import ReviewList from "./review-list";
+import EpisodeList from "./episode-list";
+import RelatedAnime from "./related-anime";
 import type { AnimeMedia } from "@shared/schema";
 
 interface AnimeDetailModalProps {
@@ -19,7 +22,12 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-800 border-slate-700">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {anime.title.english || anime.title.romaji}
+          </DialogTitle>
+        </DialogHeader>
         <div className="p-6">
           {/* Anime Header */}
           <div className="flex flex-col md:flex-row gap-6 mb-8">
@@ -111,13 +119,72 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
             </Button>
           </div>
           
-          {/* Reviews Section */}
-          <div className="border-t border-slate-700 pt-8">
-            <h4 className="text-xl font-bold mb-6">Reviews & Ratings</h4>
+          {/* Enhanced Content Sections */}
+          <Tabs defaultValue="reviews" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="reviews">Reviews</TabsTrigger>
+              <TabsTrigger value="episodes">Episodes</TabsTrigger>
+              <TabsTrigger value="related">Related</TabsTrigger>
+              <TabsTrigger value="details">Details</TabsTrigger>
+            </TabsList>
             
-            <ReviewForm animeId={anime.id} />
-            <ReviewList animeId={anime.id} />
-          </div>
+            <TabsContent value="reviews" className="mt-6">
+              <ReviewForm animeId={anime.id} totalEpisodes={anime.episodes} />
+              <ReviewList animeId={anime.id} />
+            </TabsContent>
+            
+            <TabsContent value="episodes" className="mt-6">
+              <EpisodeList 
+                animeId={anime.id} 
+                episodes={anime.episodes} 
+                nextAiringEpisode={anime.nextAiringEpisode}
+              />
+            </TabsContent>
+            
+            <TabsContent value="related" className="mt-6">
+              <RelatedAnime relations={anime.relations} />
+            </TabsContent>
+            
+            <TabsContent value="details" className="mt-6">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h5 className="font-semibold mb-2">Status</h5>
+                    <p className="text-muted-foreground">{anime.status}</p>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold mb-2">Episodes</h5>
+                    <p className="text-muted-foreground">{anime.episodes || 'Unknown'}</p>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold mb-2">Season</h5>
+                    <p className="text-muted-foreground">
+                      {anime.season ? `${anime.season} ${anime.seasonYear}` : 'Unknown'}
+                    </p>
+                  </div>
+                  <div>
+                    <h5 className="font-semibold mb-2">Score</h5>
+                    <p className="text-muted-foreground">
+                      {anime.averageScore ? `${(anime.averageScore / 10).toFixed(1)}/10` : 'Not rated'}
+                    </p>
+                  </div>
+                </div>
+                
+                {anime.tags && anime.tags.length > 0 && (
+                  <div>
+                    <h5 className="font-semibold mb-2">Tags</h5>
+                    <div className="flex flex-wrap gap-2">
+                      {anime.tags.slice(0, 15).map((tag) => (
+                        <span key={tag.name} className="bg-accent text-accent-foreground px-2 py-1 rounded text-xs">
+                          {tag.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </DialogContent>
     </Dialog>

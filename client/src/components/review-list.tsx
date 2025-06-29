@@ -13,8 +13,8 @@ export default function ReviewList({ animeId }: ReviewListProps) {
     queryFn: () => getReviews(animeId),
   });
 
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
+  const formatTimestamp = (timestamp: string | Date) => {
+    const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
     const now = new Date();
     const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     
@@ -106,6 +106,14 @@ export default function ReviewList({ animeId }: ReviewListProps) {
                   <span className="text-slate-400 text-sm">
                     {formatTimestamp(review.timestamp)}
                   </span>
+                  {(review.season || review.episode) && (
+                    <span className="text-slate-500 text-xs bg-slate-600 px-2 py-1 rounded">
+                      {review.season && review.episode ? 
+                        `${review.season} • Ep ${review.episode}` :
+                        review.season || `Episode ${review.episode}`
+                      }
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

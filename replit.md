@@ -82,6 +82,7 @@ Changelog:
 - June 29, 2025. Updated color scheme to Scarlet (#FF220C), Magnolia (#F3EFF5), and Jet (#2F2D2E) based on user preferences. Redesigned logo with circular gradient design and play button icon.
 - June 29, 2025. Integrated PostgreSQL database with Drizzle ORM, replacing in-memory storage with DatabaseStorage implementation.
 - June 29, 2025. Updated color scheme to Black (#06070E), Claret (#9C0D38), and Timberwolf (#DAD2D8) based on user's new color palette preference.
+- June 29, 2025. Enhanced review system with season/episode tracking, episode lists, related anime display, and tabbed detail view. Added comprehensive anime relations and episode information from AniList API.
 ```
 
 ## User Preferences

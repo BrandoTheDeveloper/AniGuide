@@ -156,6 +156,25 @@ export const ANIME_DETAIL_QUERY = `
       episodes
       season
       seasonYear
+      relations {
+        edges {
+          id
+          relationType
+          node {
+            id
+            title {
+              english
+              romaji
+            }
+            type
+            format
+            episodes
+            coverImage {
+              medium
+            }
+          }
+        }
+      }
     }
   }
 `;
