@@ -1,4 +1,4 @@
-import { users, type User, type InsertUser } from "@shared/schema";
+import { users, reviews, type User, type InsertUser, type Review, type InsertReview } from "@shared/schema";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -7,6 +7,8 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getReviewsForAnime(animeId: number): Promise<Review[]>;
+  addReview(review: InsertReview): Promise<Review>;
 }
 
 import { db } from "./db";
@@ -29,6 +31,19 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+
+  async getReviewsForAnime(animeId: number): Promise<Review[]> {
+    const reviewList = await db.select().from(reviews).where(eq(reviews.animeId, animeId));
+    return reviewList;
+  }
+
+  async addReview(review: InsertReview): Promise<Review> {
+    const [newReview] = await db
+      .insert(reviews)
+      .values(review)
+      .returning();
+    return newReview;
   }
 }
 

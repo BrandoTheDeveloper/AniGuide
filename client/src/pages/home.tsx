@@ -1,19 +1,26 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AnimeCard from "@/components/anime-card";
 import SearchBar from "@/components/search-bar";
 import AnimeDetailModal from "@/components/anime-detail-modal";
 import MobileNav from "@/components/mobile-nav";
+import DataStatus from "@/components/data-status";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RefreshCw } from "lucide-react";
 import type { AniListResponse, AnimeMedia } from "@shared/schema";
 
 const filterOptions = [
   { id: 'trending', label: 'Trending', endpoint: '/api/anime/trending' },
   { id: 'popular', label: 'Popular', endpoint: '/api/anime/popular' },
+  { id: 'airing', label: 'Airing Now', endpoint: '/api/anime/airing' },
+  { id: 'upcoming', label: 'Upcoming', endpoint: '/api/anime/upcoming' },
+  { id: 'top-rated', label: 'Top Rated', endpoint: '/api/anime/top-rated' },
+  { id: 'all-time-popular', label: 'All Time Popular', endpoint: '/api/anime/all-time-popular' },
 ];
 
 export default function Home() {
+  const queryClient = useQueryClient();
   const [activeFilter, setActiveFilter] = useState('trending');
   const [selectedAnime, setSelectedAnime] = useState<AnimeMedia | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,8 +31,9 @@ export default function Home() {
   });
 
   const { data: searchData, isLoading: isSearching } = useQuery<AniListResponse>({
-    queryKey: [`/api/anime/search/${searchQuery}`],
-    enabled: !!searchQuery,
+    queryKey: [`/api/anime/search`, searchQuery],
+    queryFn: () => fetch(`/api/anime/search?search=${encodeURIComponent(searchQuery)}&perPage=50`).then(res => res.json()),
+    enabled: !!searchQuery && searchQuery.length >= 2,
   });
 
   const displayData = searchQuery ? searchData : animeData;
@@ -33,6 +41,15 @@ export default function Home() {
 
   const handleAnimeClick = (anime: AnimeMedia) => {
     setSelectedAnime(anime);
+  };
+
+  const handleRefresh = async () => {
+    try {
+      await fetch('/api/cache/refresh', { method: 'POST' });
+      queryClient.invalidateQueries();
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -86,6 +103,19 @@ export default function Home() {
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">My List</a>
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Reviews</a>
             </nav>
+
+            {/* Data Status & Refresh */}
+            <div className="hidden md:flex items-center space-x-4">
+              <DataStatus />
+              <Button
+                onClick={handleRefresh}
+                variant="outline"
+                size="sm"
+                className="h-8"
+              >
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
             
             {/* Mobile Menu Button */}
             <button className="md:hidden text-muted-foreground hover:text-foreground">
