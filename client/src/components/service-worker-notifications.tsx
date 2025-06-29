@@ -13,6 +13,11 @@ export default function ServiceWorkerNotifications() {
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
   const [isSubscribedToPush, setIsSubscribedToPush] = useState(false);
 
+  // Don't render in development mode
+  if (import.meta.env.DEV) {
+    return null;
+  }
+
   useEffect(() => {
     // Handle online/offline events
     const handleOnline = () => {

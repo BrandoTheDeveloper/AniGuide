@@ -28,7 +28,7 @@ class ServiceWorkerManager {
     try {
       const swPath = process.env.NODE_ENV === 'production' 
         ? '/sw-production.js' 
-        : '/sw.js';
+        : '/sw-dev.js';
       
       this.registration = await navigator.serviceWorker.register(swPath, {
         scope: '/',
