@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReviewForm from "./review-form";
@@ -27,6 +27,9 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
           <DialogTitle>
             {anime.title.english || anime.title.romaji}
           </DialogTitle>
+          <DialogDescription>
+            View detailed information, episodes, reviews, and related anime
+          </DialogDescription>
         </DialogHeader>
         <div className="p-6">
           {/* Anime Header */}

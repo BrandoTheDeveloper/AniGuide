@@ -123,12 +123,12 @@ export default function ReviewForm({ animeId, totalEpisodes }: ReviewFormProps) 
           {totalEpisodes && totalEpisodes > 0 && (
             <div>
               <Label className="text-sm font-medium">Episode (Optional)</Label>
-              <Select value={episode?.toString() || ""} onValueChange={(value) => setEpisode(value ? parseInt(value) : undefined)}>
+              <Select value={episode?.toString() || "all"} onValueChange={(value) => setEpisode(value === "all" ? undefined : parseInt(value))}>
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select episode" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All episodes</SelectItem>
+                  <SelectItem value="all">All episodes</SelectItem>
                   {episodeOptions.map((ep) => (
                     <SelectItem key={ep} value={ep.toString()}>
                       Episode {ep}
