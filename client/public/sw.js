@@ -147,8 +147,8 @@ self.addEventListener('push', event => {
   const data = event.data ? event.data.json() : {};
   const options = {
     body: data.body || 'New anime updates available!',
-    icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"%3E%3Cdefs%3E%3ClinearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"%3E%3Cstop offset="0%" style="stop-color:%239C0D38;stop-opacity:1" /%3E%3Cstop offset="100%" style="stop-color:%23DAD2D8;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx="96" cy="96" r="80" fill="url(%23grad)"/%3E%3Cpolygon fill="%2306070E" points="72,64 128,96 72,128"/%3E%3C/svg%3E',
-    badge: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"%3E%3Ccircle cx="36" cy="36" r="32" fill="%239C0D38"/%3E%3Cpolygon fill="%2306070E" points="28,24 48,36 28,48"/%3E%3C/svg%3E',
+    icon: '/icon-192x192.png',
+    badge: '/icon-72x72.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),

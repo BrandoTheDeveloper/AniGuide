@@ -71,20 +71,13 @@ export default function MobileNav() {
             <SheetHeader className="pb-6">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <svg width="36" height="36" viewBox="0 0 36 36" className="rounded-lg">
-                    <defs>
-                      <linearGradient id="logoGradientMobile" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#9C0D38" />
-                        <stop offset="100%" stopColor="#06070E" />
-                      </linearGradient>
-                    </defs>
-                    <circle cx="18" cy="18" r="16" fill="url(#logoGradientMobile)" />
-                    <path 
-                      d="M14 12 L24 18 L14 24 Z" 
-                      fill="hsl(345, 8%, 18%)" 
-                      className="drop-shadow-sm"
-                    />
-                  </svg>
+                  <img 
+                    src="/icon-72x72.png" 
+                    alt="AniGuide Logo" 
+                    width="36" 
+                    height="36" 
+                    className="rounded-lg"
+                  />
                 </div>
                 <SheetTitle className="text-lg font-bold">AniGuide</SheetTitle>
               </div>

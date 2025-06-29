@@ -68,25 +68,13 @@ export default function Home() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <svg 
+                <img 
+                  src="/icon-72x72.png" 
+                  alt="AniGuide Logo" 
                   width="36" 
                   height="36" 
-                  viewBox="0 0 36 36" 
                   className="drop-shadow-lg"
-                >
-                  <defs>
-                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{stopColor: 'hsl(356, 100%, 55%)', stopOpacity: 1}} />
-                      <stop offset="100%" style={{stopColor: 'hsl(311, 21%, 94%)', stopOpacity: 1}} />
-                    </linearGradient>
-                  </defs>
-                  <circle cx="18" cy="18" r="16" fill="url(#logoGradient)" />
-                  <path 
-                    d="M14 12 L24 18 L14 24 Z" 
-                    fill="hsl(345, 8%, 18%)" 
-                    className="drop-shadow-sm"
-                  />
-                </svg>
+                />
               </div>
               <h1 className="text-xl font-bold text-foreground">AniGuide</h1>
             </div>
