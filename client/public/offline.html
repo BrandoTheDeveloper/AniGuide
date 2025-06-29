@@ -1,53 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline - AniGuide</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #06070E;
-            color: #DAD2D8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-        }
-        .container {
-            max-width: 400px;
-            padding: 40px 20px;
-        }
-        h1 {
-            color: #9C0D38;
-            margin-bottom: 20px;
-        }
-        p {
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-        .retry-btn {
-            background: #9C0D38;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .retry-btn:hover {
-            background: #7a0a2c;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AniGuide - Offline</title>
+  <link rel="icon" type="image/png" href="/icon-72x72.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #06070E 0%, #1a1a2e 100%);
+      color: #DAD2D8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .offline-container {
+      text-align: center;
+      max-width: 400px;
+      padding: 40px;
+      background: rgba(218, 210, 216, 0.05);
+      border-radius: 16px;
+      border: 1px solid rgba(156, 13, 56, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      border-radius: 12px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #DAD2D8;
+    }
+    
+    p {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      opacity: 0.8;
+    }
+    
+    .retry-btn {
+      background: #9C0D38;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .retry-btn:hover {
+      background: #7a0a2b;
+      transform: translateY(-1px);
+    }
+    
+    .features {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(156, 13, 56, 0.2);
+    }
+    
+    .features h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #9C0D38;
+    }
+    
+    .features ul {
+      list-style: none;
+      text-align: left;
+    }
+    
+    .features li {
+      padding: 8px 0;
+      opacity: 0.7;
+      font-size: 14px;
+    }
+    
+    .features li::before {
+      content: "✓";
+      color: #9C0D38;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>You're Offline</h1>
-        <p>AniGuide requires an internet connection to load new content. Please check your connection and try again.</p>
-        <button class="retry-btn" onclick="window.location.reload()">Try Again</button>
+  <div class="offline-container">
+    <img src="/icon-192x192.png" alt="AniGuide Logo" class="logo">
+    <h1>You're Offline</h1>
+    <p>Don't worry! Some features are still available while you're offline.</p>
+    
+    <button class="retry-btn" onclick="window.location.reload()">
+      Try Again
+    </button>
+    
+    <div class="features">
+      <h2>Available Offline</h2>
+      <ul>
+        <li>Browse cached anime data</li>
+        <li>View your saved reviews</li>
+        <li>Access your watchlist</li>
+        <li>Use the search function</li>
+      </ul>
     </div>
+  </div>
+
+  <script>
+    // Auto-retry when connection is restored
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+    
+    // Check connection status
+    if (navigator.onLine) {
+      window.location.reload();
+    }
+  </script>
 </body>
 </html>

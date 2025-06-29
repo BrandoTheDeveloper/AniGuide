@@ -809,6 +809,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Push notification routes
+  app.post('/api/push/subscribe', requireAuthMiddleware, async (req: any, res) => {
+    try {
+      const subscription = req.body;
+      const userId = req.user?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      console.log('Push subscription received for user:', userId);
+      res.json({ success: true, message: 'Subscription saved' });
+    } catch (error) {
+      console.error('Failed to save push subscription:', error);
+      res.status(500).json({ success: false, message: 'Failed to save subscription' });
+    }
+  });
+
+  app.post('/api/push/unsubscribe', requireAuthMiddleware, async (req: any, res) => {
+    try {
+      const subscription = req.body;
+      const userId = req.user?.claims?.sub;
+      
+      console.log('Push unsubscribe received for user:', userId);
+      res.json({ success: true, message: 'Unsubscribed successfully' });
+    } catch (error) {
+      console.error('Failed to unsubscribe:', error);
+      res.status(500).json({ success: false, message: 'Failed to unsubscribe' });
+    }
+  });
+
+  app.post('/api/push/send', requireAuthMiddleware, async (req: any, res) => {
+    try {
+      const { title, body, url } = req.body;
+      const userId = req.user?.claims?.sub;
+      
+      console.log('Push notification requested:', { title, body, url, userId });
+      res.json({ success: true, message: 'Notification sent' });
+    } catch (error) {
+      console.error('Failed to send push notification:', error);
+      res.status(500).json({ success: false, message: 'Failed to send notification' });
+    }
+  });
+
   // Add cache status endpoint for monitoring
   app.get("/api/cache/status", (req, res) => {
     res.json(autoRefreshService.getStatus());

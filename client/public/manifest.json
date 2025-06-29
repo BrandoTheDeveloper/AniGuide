@@ -10,6 +10,11 @@
       "url": "/?anime=%s"
     }
   ],
+  "serviceworker": {
+    "src": "/sw-production.js",
+    "scope": "/",
+    "update_via_cache": "none"
+  },
   "display": "standalone",
   "background_color": "#06070E",
   "theme_color": "#9C0D38",
