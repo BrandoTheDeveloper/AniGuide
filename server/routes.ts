@@ -598,6 +598,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Start auto-refresh service for real-time data updates
   autoRefreshService.start();
 
+  // Authentication routes (simplified for immediate functionality)
+  app.get('/api/auth/user', async (req, res) => {
+    // Return null for now - user authentication will be implemented with proper environment setup
+    res.json(null);
+  });
+
+  app.get('/api/login', (req, res) => {
+    res.redirect('https://replit.com/login');
+  });
+
+  app.get('/api/logout', (req, res) => {
+    res.redirect('/');
+  });
+
   // Add cache status endpoint for monitoring
   app.get("/api/cache/status", (req, res) => {
     res.json(autoRefreshService.getStatus());

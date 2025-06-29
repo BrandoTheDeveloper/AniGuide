@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "wouter";
 import AnimeCard from "@/components/anime-card";
 import SearchBar from "@/components/search-bar";
 import AnimeDetailModal from "@/components/anime-detail-modal";
@@ -99,10 +100,11 @@ export default function Home() {
             </div>
             
             {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-primary font-medium">Discover</a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">My List</a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Reviews</a>
+            <nav className="hidden md:flex items-center space-x-6" role="navigation" aria-label="Main navigation">
+              <Link href="/" className="text-primary font-medium">Discover</Link>
+              <Link href="/favorites" className="text-muted-foreground hover:text-foreground transition-colors">My List</Link>
+              <Link href="/reviews" className="text-muted-foreground hover:text-foreground transition-colors">Reviews</Link>
+              <Link href="/profile" className="text-muted-foreground hover:text-foreground transition-colors">Profile</Link>
             </nav>
 
             {/* Data Status & Refresh */}
@@ -113,6 +115,7 @@ export default function Home() {
                 variant="outline"
                 size="sm"
                 className="h-8"
+                aria-label="Refresh anime data"
               >
                 <RefreshCw className="h-4 w-4" />
               </Button>

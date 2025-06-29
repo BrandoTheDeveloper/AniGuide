@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - AniGuide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #06070E;
+            color: #DAD2D8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            padding: 40px 20px;
+        }
+        h1 {
+            color: #9C0D38;
+            margin-bottom: 20px;
+        }
+        p {
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .retry-btn {
+            background: #9C0D38;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .retry-btn:hover {
+            background: #7a0a2c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>You're Offline</h1>
+        <p>AniGuide requires an internet connection to load new content. Please check your connection and try again.</p>
+        <button class="retry-btn" onclick="window.location.reload()">Try Again</button>
+    </div>
+</body>
+</html>
