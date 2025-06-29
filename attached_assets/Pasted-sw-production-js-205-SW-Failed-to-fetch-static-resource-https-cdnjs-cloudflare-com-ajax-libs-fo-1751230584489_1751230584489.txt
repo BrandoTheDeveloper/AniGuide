@@ -1,0 +1,21 @@
+sw-production.js:205 [SW] Failed to fetch static resource: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css
+aniguide.onrender.com/:24  GET https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css net::ERR_ABORTED 404 (Not Found)
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21-ELSYx3yMPcKM.jpg
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx167336-KpGIIBie71OX.png
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx180367-GlRuB2lG7Kaa.jpg
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx176301-TIGmldLffQGX.jpg
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx156092-yHqgQZOF2mbg.jpg
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx178781-pbk5FgfiAJxS.jpg
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx137667-zHFOF6qbpksP.jpg
+sw-production.js:205 [SW] Failed to fetch static resource: https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx180516-lebpoKLkw6E3.jpg
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx21-ELSYx3yMPcKM.jpg 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx167336-KpGIIBie71OX.png 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx180367-GlRuB2lG7Kaa.jpg 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx176301-TIGmldLffQGX.jpg 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx156092-yHqgQZOF2mbg.jpg 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx178781-pbk5FgfiAJxS.jpg 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx137667-zHFOF6qbpksP.jpg 404 (Not Found)
+aniguide.onrender.com/:34  GET https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx180516-lebpoKLkw6E3.jpg 404 (Not Found)
+index-DvujAqSF.js:322 Service Worker registered successfully: ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://aniguide.onrender.com/', …}
+index-DvujAqSF.js:322 Service Worker registered successfully
+aniguide.onrender.com/:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'aniguide-v6';
+const CACHE_VERSION = 'aniguide-v8';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
@@ -77,21 +77,9 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Allow anime images and essential external resources
-  const allowedDomains = [
-    'anilist.co',
-    's4.anilist.co',
-    'googlefonts.googleapis.com',
-    'fonts.gstatic.com',
-    'cdnjs.cloudflare.com'
-  ];
-  
-  // Skip external requests except for allowed domains
+  // Only handle our own domain requests - let everything else pass through
   if (url.origin !== self.location.origin) {
-    const isAllowedDomain = allowedDomains.some(domain => url.hostname.includes(domain));
-    if (!isAllowedDomain) {
-      return;
-    }
+    return;
   }
 
   // API requests - cache with network fallback
@@ -161,40 +149,18 @@ async function handleApiRequest(request) {
 async function handleStaticRequest(request) {
   const url = new URL(request.url);
   
+  // Check cache first for all static assets
+  const cachedResponse = await caches.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
   try {
-    // For anime images from AniList, use network-first to ensure fresh content
-    if (url.hostname.includes('anilist.co') && 
-        (request.destination === 'image' || url.pathname.match(/\.(jpg|jpeg|png|gif|webp)$/i))) {
-      
-      try {
-        const networkResponse = await fetch(request);
-        if (networkResponse.ok) {
-          // Cache the image for offline use
-          const cache = await caches.open(STATIC_CACHE);
-          cache.put(request, networkResponse.clone());
-          return networkResponse;
-        }
-      } catch (networkError) {
-        console.log('[SW] Network failed for anime image, trying cache:', url.href);
-        // Fall back to cache if network fails
-        const cachedResponse = await caches.match(request);
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-      }
-    }
-    
-    // For other static assets, check cache first
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
     // Fetch from network
     const networkResponse = await fetch(request);
     
     if (networkResponse.ok) {
-      // Cache static assets
+      // Cache successful responses
       const cache = await caches.open(STATIC_CACHE);
       cache.put(request, networkResponse.clone());
       return networkResponse;
@@ -202,16 +168,27 @@ async function handleStaticRequest(request) {
     
     throw new Error(`Static request failed: ${networkResponse.status}`);
   } catch (error) {
-    console.log('[SW] Failed to fetch static resource:', request.url);
+    console.log('[SW] Network failed for static resource:', request.url);
     
     // Return offline page for navigation requests
     if (request.mode === 'navigate') {
       const offlineResponse = await caches.match(OFFLINE_PAGE);
-      return offlineResponse || new Response('Offline', { status: 200 });
+      return offlineResponse || new Response('<h1>Offline</h1><p>Check your internet connection</p>', { 
+        status: 200, 
+        headers: { 'Content-Type': 'text/html' }
+      });
     }
     
-    // Return empty response for other resources
-    return new Response('', { status: 404 });
+    // Return transparent pixel for images to prevent broken image icons
+    if (request.destination === 'image') {
+      return new Response(atob('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'), {
+        status: 200,
+        headers: { 'Content-Type': 'image/gif' }
+      });
+    }
+    
+    // Return 404 for other resources
+    return new Response('Resource not available offline', { status: 404 });
   }
 }
 
