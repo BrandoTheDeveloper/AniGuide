@@ -145,12 +145,12 @@ We may update this Privacy Policy periodically. When we make changes:
 
 For privacy-related questions or concerns:
 
-**Email:** privacy@aniguide.app  
+**Email:** brandothedeveloper@gmail.com  
 **Subject:** Privacy Policy Inquiry  
 **Response time:** We aim to respond within 48 hours
 
 For general support:
-**Email:** support@aniguide.app
+**Email:** brandothedeveloper@gmail.com
 
 ## Legal Basis for Processing (GDPR)
 
