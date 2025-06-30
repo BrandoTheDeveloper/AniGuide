@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.onrender.aniguide.twa",
+        "sha256_cert_fingerprints": ["66:0E:92:74:2A:29:A3:6F:F7:A9:97:D7:CB:A5:CA:FE:9E:26:CA:03:15:60:B7:27:CB:68:20:3E:21:AE:92:EA"]
+      }
+    }]
