@@ -5,18 +5,19 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import React, { useEffect } from "react";
 import Home from "@/pages/home";
-import Search from "@/pages/search";
-import Favorites from "@/pages/favorites";
-import Reviews from "@/pages/reviews";
-import Profile from "@/pages/profile";
 import AnimeDetail from "@/pages/anime-detail";
+import Profile from "@/pages/profile";
+import Search from "@/pages/search";
+import Reviews from "@/pages/reviews";
+import Favorites from "@/pages/favorites";
+import PrivacyPolicy from "./pages/privacy-policy";
 import NotFound from "@/pages/not-found";
 
 // SEO component for meta tags
 function SEOHead({ title, description, path }: { title: string; description: string; path: string }) {
   useEffect(() => {
     document.title = title;
-    
+
     let metaDescription = document.querySelector('meta[name="description"]');
     if (!metaDescription) {
       metaDescription = document.createElement('meta');
@@ -96,6 +97,12 @@ function Router() {
           path="/anime"
         />
         <AnimeDetail />
+      </Route>
+      <Route path="/favorites">
+        <Favorites />
+      </Route>
+      <Route path="/privacy-policy">
+        <PrivacyPolicy />
       </Route>
       <Route component={NotFound} />
     </Switch>
