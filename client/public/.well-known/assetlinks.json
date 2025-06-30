@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.onrender.aniguide.twa",
-    "sha256_cert_fingerprints": ["66:0E:92:74:2A:29:A3:6F:F7:A9:97:D7:CB:A5:CA:FE:9E:26:CA:03:15:60:B7:27:CB:68:20:3E:21:AE:92:EA"]
+    "sha256_cert_fingerprints": ["23:02:CA:6B:F4:B8:E9:01:83:14:4A:1D:20:2D:63:E6:CC:C0:5A:DE:34:48:F0:2F:97:C9:66:AA:ED:BD:35:71"]
   }
 }]
