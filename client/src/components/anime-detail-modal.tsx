@@ -58,7 +58,7 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
                         ></i>
                       ))}
                     </div>
-                    <span className="font-medium">{(anime.averageScore / 10).toFixed(1)}/10</span>
+                    <span className="font-medium text-white dark:text-white">{(anime.averageScore / 10).toFixed(1)}/10</span>
                   </div>
                 )}
                 
@@ -71,24 +71,24 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
                 </span>
                 
                 {anime.startDate?.year && (
-                  <span className="text-slate-400">{anime.startDate.year}</span>
+                  <span className="text-white dark:text-gray-300">{anime.startDate.year}</span>
                 )}
                 
                 {anime.episodes && (
-                  <span className="text-slate-400">{anime.episodes} Episodes</span>
+                  <span className="text-white dark:text-gray-300">{anime.episodes} Episodes</span>
                 )}
               </div>
               
               <div className="flex flex-wrap gap-2 mb-4">
                 {anime.genres.map((genre) => (
-                  <span key={genre} className="bg-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm">
+                  <span key={genre} className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
                     {genre}
                   </span>
                 ))}
               </div>
               
               {anime.description && (
-                <p className="text-slate-300 mb-6 leading-relaxed">
+                <p className="text-white dark:text-gray-200 mb-6 leading-relaxed">
                   {anime.description.replace(/<[^>]*>/g, '').substring(0, 300)}
                   {anime.description.length > 300 && '...'}
                 </p>

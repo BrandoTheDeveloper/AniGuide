@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import React, { useEffect } from "react";
 import Home from "@/pages/home";
+import Landing from "@/pages/landing";
 import AnimeDetail from "@/pages/anime-detail";
 import Profile from "@/pages/profile";
 import Search from "@/pages/search";
@@ -12,6 +13,7 @@ import Reviews from "@/pages/reviews";
 import Favorites from "@/pages/favorites";
 import PrivacyPolicy from "./pages/privacy-policy";
 import NotFound from "@/pages/not-found";
+import { useAuth } from "@/hooks/useAuth";
 
 // SEO component for meta tags
 function SEOHead({ title, description, path }: { title: string; description: string; path: string }) {
@@ -48,6 +50,43 @@ function SEOHead({ title, description, path }: { title: string; description: str
 }
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Switch>
+        <Route path="/">
+          <SEOHead 
+            title="AniGuide - Discover & Review Anime" 
+            description="Join AniGuide to discover trending anime, write reviews, and track your watchlist. Create your account to unlock the full anime discovery experience."
+            path="/"
+          />
+          <Landing />
+        </Route>
+        <Route path="/browse">
+          <SEOHead 
+            title="Browse Anime - AniGuide" 
+            description="Browse trending and popular anime without an account. Sign up to save favorites and write reviews."
+            path="/browse"
+          />
+          <Home />
+        </Route>
+        <Route component={NotFound} />
+      </Switch>
+    );
+  }
+
   return (
     <Switch>
       <Route path="/">

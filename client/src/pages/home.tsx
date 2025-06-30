@@ -111,10 +111,10 @@ export default function Home() {
               <AccountMenu />
             </div>
             
-            {/* Mobile Menu Button */}
-            <button className="md:hidden text-muted-foreground hover:text-foreground">
-              <i className="fas fa-bars text-xl"></i>
-            </button>
+            {/* Mobile Navigation */}
+            <div className="md:hidden">
+              <MobileNav />
+            </div>
           </div>
         </div>
       </header>
@@ -215,8 +215,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Mobile Navigation */}
-      <MobileNav />
+
 
       {/* Install Prompt */}
       <InstallPrompt />

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupLocalAuth, requireAuth } from "./localAuth";
 import { insertReviewSchema } from "@shared/schema";
 import { animeCache } from "./anime-cache";
 import { autoRefreshService } from "./auto-refresh";
@@ -354,6 +354,9 @@ async function fetchFromAniList(query: string, variables: any = {}) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupLocalAuth(app);
+
   // Get trending anime
   app.get("/api/anime/trending", async (req, res) => {
     try {
@@ -584,23 +587,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Authentication middleware definitions (moved before usage)
+  // Optional authentication middleware for guest browsing
   const optionalAuthMiddleware = (req: any, res: any, next: any) => {
-    // For guest users, don't set user
-    // In production, this would check for authentication but not require it
     next();
   };
 
-  const requireAuthMiddleware = (req: any, res: any, next: any) => {
-    // For development, simulate authentication for protected features
-    req.user = { claims: { sub: "dev-user" } };
-    next();
-  };
-
-  app.post("/api/reviews", requireAuthMiddleware, async (req, res) => {
+  app.post("/api/reviews", requireAuth, async (req: any, res) => {
     try {
       const validatedData = insertReviewSchema.parse(req.body);
       // Add user ID to the review
-      validatedData.userId = req.user.claims.sub;
+      validatedData.userId = req.user.id;
       const review = await storage.addReview(validatedData);
       res.status(201).json(review);
     } catch (error) {
@@ -614,37 +610,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Start auto-refresh service for real-time data updates
   autoRefreshService.start();
 
-  // Auth routes - supports guest browsing
-  app.get('/api/auth/user', requireAuthMiddleware, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      let user = await storage.getUser(userId);
-      
-      if (!user) {
-        user = await storage.upsertUser({
-          id: userId,
-          email: "demo@aniguide.app",
-          firstName: "Demo",
-          lastName: "User",
-          profileImageUrl: "https://replit.com/public/images/avatars/default.png",
-        });
-      }
-      
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Auth routes are now handled in localAuth.ts
 
-  // Logout route
-  app.get('/api/logout', (req, res) => {
-    // Clear any session data
-    res.json({ message: "Logged out successfully" });
-  });
+  // Logout route is now handled in localAuth.ts
 
   // Admin user creation route
-  app.post('/api/admin/create-user', requireAuthMiddleware, async (req: any, res) => {
+  app.post('/api/admin/create-user', requireAuth, async (req: any, res) => {
     try {
       const adminUser = await storage.createAdminUser({
         id: "admin-" + Date.now(),
@@ -661,9 +632,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Protected watchlist routes - require authentication
-  app.get('/api/watchlist', requireAuthMiddleware, async (req: any, res) => {
+  app.get('/api/watchlist', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const watchlist = await storage.getUserWatchlist(userId);
       res.json(watchlist);
     } catch (error) {
@@ -672,9 +643,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/watchlist', requireAuthMiddleware, async (req: any, res) => {
+  app.post('/api/watchlist', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { animeId, status = 'plan_to_watch', rating, episodesWatched = 0 } = req.body;
       
       const watchlistItem = await storage.addToWatchlist({
@@ -692,9 +663,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/watchlist/:animeId', requireAuthMiddleware, async (req: any, res) => {
+  app.put('/api/watchlist/:animeId', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const animeId = parseInt(req.params.animeId);
       const updates = req.body;
       
@@ -706,9 +677,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/watchlist/:animeId', requireAuthMiddleware, async (req: any, res) => {
+  app.delete('/api/watchlist/:animeId', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const animeId = parseInt(req.params.animeId);
       
       const success = await storage.removeFromWatchlist(userId, animeId);
@@ -810,7 +781,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Push notification routes
-  app.post('/api/push/subscribe', requireAuthMiddleware, async (req: any, res) => {
+  app.post('/api/push/subscribe', requireAuth, async (req: any, res) => {
     try {
       const subscription = req.body;
       const userId = req.user?.claims?.sub;
@@ -827,7 +798,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/push/unsubscribe', requireAuthMiddleware, async (req: any, res) => {
+  app.post('/api/push/unsubscribe', requireAuth, async (req: any, res) => {
     try {
       const subscription = req.body;
       const userId = req.user?.claims?.sub;
@@ -840,7 +811,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/push/send', requireAuthMiddleware, async (req: any, res) => {
+  app.post('/api/push/send', requireAuth, async (req: any, res) => {
     try {
       const { title, body, url } = req.body;
       const userId = req.user?.claims?.sub;
