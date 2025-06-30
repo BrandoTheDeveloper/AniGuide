@@ -30,9 +30,9 @@ export default function AccountMenu() {
   if (!isAuthenticated) {
     return (
       <Button 
-        onClick={() => window.location.href = "/api/login"}
+        onClick={() => window.location.href = "/login"}
         variant="outline"
-        className="hidden md:flex"
+        className="hidden md:flex border-[#9C0D38] text-[#9C0D38] hover:bg-[#9C0D38]/10"
       >
         Sign In
       </Button>
@@ -81,7 +81,15 @@ export default function AccountMenu() {
             <span>Reset Password</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => window.location.href = "/api/logout"}>
+          <DropdownMenuItem onClick={async () => {
+            try {
+              await fetch('/api/auth/logout', { method: 'POST' });
+              window.location.href = '/';
+            } catch (error) {
+              console.error('Logout failed:', error);
+              window.location.href = '/';
+            }
+          }}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>

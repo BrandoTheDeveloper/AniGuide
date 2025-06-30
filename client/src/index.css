@@ -70,3 +70,18 @@
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
+
+/* Star rating styles */
+.star-rating .star {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.star-rating .star.active {
+  color: #9C0D38; /* Scarlet when selected */
+}
+
+.star-rating .star:hover {
+  color: #9C0D38;
+}

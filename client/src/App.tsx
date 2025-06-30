@@ -3,9 +3,10 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Home from "@/pages/home";
 import Landing from "@/pages/landing";
+import LoginPage from "@/pages/login";
 import AnimeDetail from "@/pages/anime-detail";
 import Profile from "@/pages/profile";
 import Search from "@/pages/search";
@@ -13,7 +14,9 @@ import Reviews from "@/pages/reviews";
 import Favorites from "@/pages/favorites";
 import PrivacyPolicy from "./pages/privacy-policy";
 import NotFound from "@/pages/not-found";
+import SplashScreen from "@/components/splash-screen";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // SEO component for meta tags
 function SEOHead({ title, description, path }: { title: string; description: string; path: string }) {
@@ -51,8 +54,22 @@ function SEOHead({ title, description, path }: { title: string; description: str
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
+  const isMobile = useIsMobile();
+  const [showSplash, setShowSplash] = useState(isMobile);
+  const [authChecked, setAuthChecked] = useState(false);
 
-  if (isLoading) {
+  // Mark auth as checked after first load
+  useEffect(() => {
+    if (!isLoading) {
+      setAuthChecked(true);
+    }
+  }, [isLoading]);
+
+  if (showSplash && isMobile) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
+
+  if (!authChecked) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -63,30 +80,7 @@ function Router() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <Switch>
-        <Route path="/">
-          <SEOHead 
-            title="AniGuide - Discover & Review Anime" 
-            description="Join AniGuide to discover trending anime, write reviews, and track your watchlist. Create your account to unlock the full anime discovery experience."
-            path="/"
-          />
-          <Landing />
-        </Route>
-        <Route path="/browse">
-          <SEOHead 
-            title="Browse Anime - AniGuide" 
-            description="Browse trending and popular anime without an account. Sign up to save favorites and write reviews."
-            path="/browse"
-          />
-          <Home />
-        </Route>
-        <Route component={NotFound} />
-      </Switch>
-    );
-  }
-
+  // Desktop: Open directly to home, mobile: Show home for both authenticated and guest users
   return (
     <Switch>
       <Route path="/">
@@ -94,6 +88,22 @@ function Router() {
           title="AniGuide - Discover & Review Anime" 
           description="Explore trending anime, read reviews, and track your watchlist. Discover your next favorite anime series with AniGuide's comprehensive database and community reviews."
           path="/"
+        />
+        <Home />
+      </Route>
+      <Route path="/login">
+        <SEOHead 
+          title="Login - AniGuide" 
+          description="Sign in to your AniGuide account to access reviews, watchlist, and personalized anime recommendations."
+          path="/login"
+        />
+        <LoginPage />
+      </Route>
+      <Route path="/browse">
+        <SEOHead 
+          title="Browse Anime - AniGuide" 
+          description="Browse trending and popular anime. Sign up to save favorites and write reviews."
+          path="/browse"
         />
         <Home />
       </Route>
@@ -137,10 +147,12 @@ function Router() {
         />
         <AnimeDetail />
       </Route>
-      <Route path="/favorites">
-        <Favorites />
-      </Route>
       <Route path="/privacy-policy">
+        <SEOHead 
+          title="Privacy Policy - AniGuide" 
+          description="Read AniGuide's privacy policy to understand how we protect your data and respect your privacy while you discover and review anime."
+          path="/privacy-policy"
+        />
         <PrivacyPolicy />
       </Route>
       <Route component={NotFound} />

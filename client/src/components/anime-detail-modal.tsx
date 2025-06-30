@@ -5,6 +5,7 @@ import ReviewForm from "./review-form";
 import ReviewList from "./review-list";
 import EpisodeList from "./episode-list";
 import RelatedAnime from "./related-anime";
+import ProtectedFeature from "./protected-feature";
 import type { AnimeMedia } from "@shared/schema";
 
 interface AnimeDetailModalProps {
@@ -58,7 +59,7 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
                         ></i>
                       ))}
                     </div>
-                    <span className="font-medium text-white dark:text-white">{(anime.averageScore / 10).toFixed(1)}/10</span>
+                    <span className="font-medium text-[#2F2D2E] dark:text-[#2F2D2E]">{(anime.averageScore / 10).toFixed(1)}/10</span>
                   </div>
                 )}
                 
@@ -71,24 +72,24 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
                 </span>
                 
                 {anime.startDate?.year && (
-                  <span className="text-white dark:text-gray-300">{anime.startDate.year}</span>
+                  <span className="text-[#2F2D2E] dark:text-[#2F2D2E]">{anime.startDate.year}</span>
                 )}
                 
                 {anime.episodes && (
-                  <span className="text-white dark:text-gray-300">{anime.episodes} Episodes</span>
+                  <span className="text-[#2F2D2E] dark:text-[#2F2D2E]">{anime.episodes} Episodes</span>
                 )}
               </div>
               
               <div className="flex flex-wrap gap-2 mb-4">
                 {anime.genres.map((genre) => (
-                  <span key={genre} className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
+                  <span key={genre} className="bg-[#2F2D2E] text-[#DAD2D8] px-3 py-1 rounded-full text-sm">
                     {genre}
                   </span>
                 ))}
               </div>
               
               {anime.description && (
-                <p className="text-white dark:text-gray-200 mb-6 leading-relaxed">
+                <p className="text-[#2F2D2E] dark:text-[#2F2D2E] mb-6 leading-relaxed">
                   {anime.description.replace(/<[^>]*>/g, '').substring(0, 300)}
                   {anime.description.length > 300 && '...'}
                 </p>
@@ -101,7 +102,7 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
                     <i className="fas fa-clock"></i>
                     <span className="font-medium">Next Episode</span>
                   </div>
-                  <p className="text-white mt-1">
+                  <p className="text-[#2F2D2E] mt-1">
                     {formatNextEpisode(anime.nextAiringEpisode)}
                   </p>
                 </div>
@@ -111,13 +112,35 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
           
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 mb-8">
-            <Button className="bg-primary hover:bg-primary/90 px-6 py-3">
-              <i className="fas fa-plus mr-2"></i>Add to My List
-            </Button>
-            <Button variant="secondary" className="bg-slate-700 hover:bg-slate-600 px-6 py-3">
-              <i className="fas fa-heart mr-2"></i>Mark as Favorite
-            </Button>
-            <Button variant="secondary" className="bg-slate-700 hover:bg-slate-600 px-6 py-3">
+            <ProtectedFeature
+              featureName="Watchlist"
+              description="Add anime to your personal watchlist to track what you want to watch"
+              trigger={
+                <Button className="bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8] px-6 py-3">
+                  <i className="fas fa-plus mr-2"></i>Add to My List
+                </Button>
+              }
+            >
+              <Button className="bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8] px-6 py-3">
+                <i className="fas fa-plus mr-2"></i>Add to My List
+              </Button>
+            </ProtectedFeature>
+            
+            <ProtectedFeature
+              featureName="Favorites"
+              description="Mark anime as favorite to easily find them later"
+              trigger={
+                <Button className="bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8] px-6 py-3">
+                  <i className="fas fa-heart mr-2"></i>Mark as Favorite
+                </Button>
+              }
+            >
+              <Button className="bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8] px-6 py-3">
+                <i className="fas fa-heart mr-2"></i>Mark as Favorite
+              </Button>
+            </ProtectedFeature>
+            
+            <Button className="bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8] px-6 py-3">
               <i className="fas fa-share mr-2"></i>Share
             </Button>
           </div>
@@ -132,7 +155,12 @@ export default function AnimeDetailModal({ anime, isOpen, onClose }: AnimeDetail
             </TabsList>
             
             <TabsContent value="reviews" className="mt-6">
-              <ReviewForm animeId={anime.id} totalEpisodes={anime.episodes} />
+              <ProtectedFeature
+                featureName="Reviews"
+                description="Write and share your thoughts about anime episodes and series"
+              >
+                <ReviewForm animeId={anime.id} totalEpisodes={anime.episodes} />
+              </ProtectedFeature>
               <ReviewList animeId={anime.id} />
             </TabsContent>
             

@@ -120,7 +120,18 @@ export async function setupLocalAuth(app: Express) {
         return res.status(500).json({ message: "Failed to logout" });
       }
       res.clearCookie('connect.sid');
-      res.json({ message: "Logged out successfully" });
+      res.json({ message: "Logged out successfully", redirect: "/" });
+    });
+  });
+
+  // GET logout route for direct navigation
+  app.get('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+      }
+      res.clearCookie('connect.sid');
+      res.redirect('/');
     });
   });
 

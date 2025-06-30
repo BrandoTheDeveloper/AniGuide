@@ -110,9 +110,9 @@ export default function MobileNav() {
                 <Button 
                   onClick={() => {
                     setOpen(false);
-                    window.location.href = "/api/login";
+                    window.location.href = "/login";
                   }}
-                  className="w-full bg-claret hover:bg-claret/90"
+                  className="w-full bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8]"
                 >
                   <LogIn className="mr-2 h-4 w-4" />
                   Sign In

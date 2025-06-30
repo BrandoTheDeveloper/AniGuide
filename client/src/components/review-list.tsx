@@ -91,7 +91,7 @@ export default function ReviewList({ animeId }: ReviewListProps) {
                 </span>
               </div>
               <div>
-                <p className="font-medium">
+                <p className="font-medium text-[#2F2D2E]">
                   {review.userId === 'anonymous' ? 'Anonymous User' : review.userId}
                 </p>
                 <div className="flex items-center space-x-2">
@@ -103,7 +103,7 @@ export default function ReviewList({ animeId }: ReviewListProps) {
                       ></i>
                     ))}
                   </div>
-                  <span className="text-slate-400 text-sm">
+                  <span className="text-[#2F2D2E] text-sm">
                     {formatTimestamp(review.timestamp)}
                   </span>
                   {(review.season || review.episode) && (
@@ -118,7 +118,7 @@ export default function ReviewList({ animeId }: ReviewListProps) {
               </div>
             </div>
           </div>
-          <p className="text-slate-300 leading-relaxed">
+          <p className="text-[#2F2D2E] leading-relaxed">
             {review.text}
           </p>
         </div>
