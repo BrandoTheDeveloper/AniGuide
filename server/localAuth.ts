@@ -15,6 +15,16 @@ const registerSchema = z.object({
   password: z.string().min(8),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
+  username: z.string().min(3).optional(),
+});
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string(),
+  password: z.string().min(8),
 });
 
 export function getSession() {
@@ -76,12 +86,20 @@ export async function setupLocalAuth(app: Express) {
   // Register route
   app.post('/api/auth/register', async (req, res) => {
     try {
-      const { email, password, firstName, lastName } = registerSchema.parse(req.body);
+      const { email, password, firstName, lastName, username } = registerSchema.parse(req.body);
       
       // Check if user already exists
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(409).json({ message: "An account with this email already exists" });
+      }
+
+      // Check if username is taken
+      if (username) {
+        const existingUsername = await storage.getUserByUsername(username);
+        if (existingUsername) {
+          return res.status(409).json({ message: "This username is already taken" });
+        }
       }
 
       // Hash password
@@ -97,6 +115,7 @@ export async function setupLocalAuth(app: Express) {
         passwordHash,
         firstName: firstName || null,
         lastName: lastName || null,
+        username: username || null,
         profileImageUrl: null,
       });
 
@@ -108,7 +127,73 @@ export async function setupLocalAuth(app: Express) {
       res.json(userData);
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(400).json({ message: "Invalid request or email already exists" });
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Please check your input: " + error.errors.map(e => e.message).join(", ")
+        });
+      }
+      res.status(400).json({ message: "Failed to create account. Please try again." });
+    }
+  });
+
+  // Forgot password route
+  app.post('/api/auth/forgot-password', async (req, res) => {
+    try {
+      const { email } = forgotPasswordSchema.parse(req.body);
+      
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Don't reveal if email exists or not for security
+        return res.json({ message: "If an account with this email exists, you will receive a password reset link." });
+      }
+
+      // Generate reset token
+      const resetToken = Math.random().toString(36).substr(2) + Date.now().toString(36);
+      const resetExpires = new Date(Date.now() + 3600000); // 1 hour
+
+      const success = await storage.setPasswordResetToken(email, resetToken, resetExpires);
+      if (!success) {
+        return res.status(500).json({ message: "Failed to generate reset token. Please try again." });
+      }
+
+      // In a real app, you would send an email here
+      // For demo purposes, we'll return the token (remove this in production!)
+      res.json({ 
+        message: "If an account with this email exists, you will receive a password reset link.",
+        resetToken: resetToken // REMOVE THIS IN PRODUCTION
+      });
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(400).json({ message: "Invalid request" });
+    }
+  });
+
+  // Reset password route
+  app.post('/api/auth/reset-password', async (req, res) => {
+    try {
+      const { token, password } = resetPasswordSchema.parse(req.body);
+      
+      const user = await storage.getUserByResetToken(token);
+      if (!user) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+
+      // Hash new password
+      const passwordHash = await bcrypt.hash(password, 12);
+      
+      // Update password and clear reset token
+      await storage.updatePassword(user.id, passwordHash);
+      await storage.clearResetToken(user.id);
+
+      res.json({ message: "Password has been reset successfully. You can now sign in with your new password." });
+    } catch (error) {
+      console.error("Reset password error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Password must be at least 8 characters long"
+        });
+      }
+      res.status(400).json({ message: "Failed to reset password. Please try again." });
     }
   });
 

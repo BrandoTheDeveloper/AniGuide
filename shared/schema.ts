@@ -24,6 +24,8 @@ export const users = pgTable("users", {
   username: varchar("username").unique(),
   lastUsernameChange: timestamp("last_username_change"),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  resetToken: varchar("reset_token"),
+  resetTokenExpires: timestamp("reset_token_expires"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

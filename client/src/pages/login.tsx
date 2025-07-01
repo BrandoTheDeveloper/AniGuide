@@ -18,6 +18,10 @@ export default function LoginPage() {
     lastName: "",
     username: ""
   });
+  const [forgotPasswordData, setForgotPasswordData] = useState({ email: "" });
+  const [resetPasswordData, setResetPasswordData] = useState({ token: "", password: "" });
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const { toast } = useToast();
 
   const loginMutation = useMutation({
@@ -73,6 +77,70 @@ export default function LoginPage() {
       toast({
         title: "Registration Failed",
         description: error.message || "Failed to create account.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (data: { email: string }) => {
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to send reset email");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Reset Link Sent",
+        description: data.message,
+      });
+      // For demo purposes, show the reset token
+      if (data.resetToken) {
+        setResetPasswordData({ ...resetPasswordData, token: data.resetToken });
+        setShowResetPassword(true);
+        setShowForgotPassword(false);
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send reset email.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (data: { token: string; password: string }) => {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to reset password");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Password Reset",
+        description: data.message,
+      });
+      setShowResetPassword(false);
+      setShowForgotPassword(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Reset Failed",
+        description: error.message || "Failed to reset password.",
         variant: "destructive",
       });
     },
@@ -140,6 +208,16 @@ export default function LoginPage() {
                     >
                       {loginMutation.isPending ? "Signing in..." : "Sign In"}
                     </Button>
+                    <div className="text-center">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="text-[#9C0D38] hover:text-[#9C0D38]/80 text-sm"
+                        onClick={() => setShowForgotPassword(true)}
+                      >
+                        Forgot your password?
+                      </Button>
+                    </div>
                   </div>
                 </form>
               </TabsContent>
@@ -227,6 +305,121 @@ export default function LoginPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Forgot Password Modal */}
+        {showForgotPassword && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <Card className="w-full max-w-md bg-white">
+              <CardHeader>
+                <CardTitle className="text-[#06070E]">Reset Password</CardTitle>
+                <CardDescription className="text-[#2F2D2E]">
+                  Enter your email to receive a password reset link
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  forgotPasswordMutation.mutate(forgotPasswordData);
+                }}>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="resetEmail" className="text-[#06070E]">Email</Label>
+                      <Input
+                        id="resetEmail"
+                        type="email"
+                        value={forgotPasswordData.email}
+                        onChange={(e) => setForgotPasswordData({ email: e.target.value })}
+                        className="border-[#9C0D38]/20 focus:border-[#9C0D38]"
+                        required
+                      />
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        type="submit" 
+                        className="flex-1 bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8]"
+                        disabled={forgotPasswordMutation.isPending}
+                      >
+                        {forgotPasswordMutation.isPending ? "Sending..." : "Send Reset Link"}
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => setShowForgotPassword(false)}
+                        className="border-[#9C0D38]/20"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Reset Password Modal */}
+        {showResetPassword && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <Card className="w-full max-w-md bg-white">
+              <CardHeader>
+                <CardTitle className="text-[#06070E]">Set New Password</CardTitle>
+                <CardDescription className="text-[#2F2D2E]">
+                  Enter your new password below
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  resetPasswordMutation.mutate(resetPasswordData);
+                }}>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="resetToken" className="text-[#06070E]">Reset Token</Label>
+                      <Input
+                        id="resetToken"
+                        value={resetPasswordData.token}
+                        onChange={(e) => setResetPasswordData({ ...resetPasswordData, token: e.target.value })}
+                        className="border-[#9C0D38]/20 focus:border-[#9C0D38]"
+                        required
+                        readOnly
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="newPassword" className="text-[#06070E]">New Password</Label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={resetPasswordData.password}
+                        onChange={(e) => setResetPasswordData({ ...resetPasswordData, password: e.target.value })}
+                        className="border-[#9C0D38]/20 focus:border-[#9C0D38]"
+                        placeholder="At least 8 characters"
+                        required
+                        minLength={8}
+                      />
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button 
+                        type="submit" 
+                        className="flex-1 bg-[#9C0D38] hover:bg-[#9C0D38]/90 text-[#DAD2D8]"
+                        disabled={resetPasswordMutation.isPending}
+                      >
+                        {resetPasswordMutation.isPending ? "Resetting..." : "Reset Password"}
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => setShowResetPassword(false)}
+                        className="border-[#9C0D38]/20"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { users, reviews, watchlist, type User, type UpsertUser, type Review, type InsertReview, type WatchlistItem, type InsertWatchlistItem } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, gt } from "drizzle-orm";
 
 // Interface for storage operations
 export interface IStorage {
@@ -13,6 +13,10 @@ export interface IStorage {
   updateUserProfile(id: string, updates: Partial<Pick<User, 'firstName' | 'lastName' | 'email'>>): Promise<User>;
   updateUsername(id: string, username: string): Promise<User>;
   createAdminUser(userData: UpsertUser): Promise<User>;
+  setPasswordResetToken(email: string, token: string, expires: Date): Promise<boolean>;
+  getUserByResetToken(token: string): Promise<User | undefined>;
+  updatePassword(id: string, passwordHash: string): Promise<User>;
+  clearResetToken(id: string): Promise<void>;
   // Review operations
   getReviewsForAnime(animeId: number): Promise<Review[]>;
   addReview(review: InsertReview): Promise<Review>;
@@ -159,6 +163,57 @@ export class DatabaseStorage implements IStorage {
       .from(watchlist)
       .where(and(eq(watchlist.userId, userId), eq(watchlist.animeId, animeId)));
     return item;
+  }
+
+  // Password reset methods
+  async setPasswordResetToken(email: string, token: string, expires: Date): Promise<boolean> {
+    try {
+      const result = await db
+        .update(users)
+        .set({ 
+          resetToken: token, 
+          resetTokenExpires: expires 
+        })
+        .where(eq(users.email, email))
+        .returning();
+      return result.length > 0;
+    } catch (error) {
+      console.error("Error setting password reset token:", error);
+      return false;
+    }
+  }
+
+  async getUserByResetToken(token: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(and(
+        eq(users.resetToken, token),
+        gt(users.resetTokenExpires, new Date())
+      ));
+    return user;
+  }
+
+  async updatePassword(id: string, passwordHash: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ 
+        passwordHash,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async clearResetToken(id: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ 
+        resetToken: null, 
+        resetTokenExpires: null 
+      })
+      .where(eq(users.id, id));
   }
 }
 
