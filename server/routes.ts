@@ -5,6 +5,7 @@ import { setupLocalAuth, requireAuth } from "./localAuth";
 import { insertReviewSchema } from "@shared/schema";
 import { animeCache } from "./anime-cache";
 import { autoRefreshService } from "./auto-refresh";
+import { testDatabaseConnection } from "./db";
 import { z } from "zod";
 
 const ANILIST_API_URL = "https://graphql.anilist.co";
@@ -354,6 +355,13 @@ async function fetchFromAniList(query: string, variables: any = {}) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Test database connection on startup
+  console.log("Testing database connection...");
+  const dbConnected = await testDatabaseConnection();
+  if (!dbConnected) {
+    console.warn("Database connection failed, but continuing server startup...");
+  }
+
   // Auth middleware
   await setupLocalAuth(app);
 
